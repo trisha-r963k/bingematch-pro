@@ -1,0 +1,147 @@
+[
+  {
+    "id": "m/1001902-beauty_and_the_beast",
+    "title": "Beauty and The Beast (La Belle et la bête)",
+    "year": 1946,
+    "runtime_minutes": 95,
+    "content_rating": "NR",
+    "genres": [
+      "Drama",
+      "Science Fiction & Fantasy",
+      "Romance"
+    ],
+    "directors": "Jean Cocteau",
+    "description": "The story of a gentle-hearted beast in love with a simple and beautiful girl. She is drawn to the repellent but strangely fascinating Beast, who tests her fidelity by giving her a key, telling her that if she doesn't return it to him by a specific time, he will die of grief. She is unable to return the key on time, but it is revealed that the Beast is the genuinely handsome one. A simple tale of tragic love that turns into a surreal vision of death, desire, and beauty.",
+    "verdict": "Crowd Pleaser",
+    "verdict_probabilities": {
+      "Arthouse Slog": 0.19,
+      "Crowd Pleaser": 0.755,
+      "Hidden Gem": 0.045,
+      "Overhyped": 0.01
+    },
+    "regret_score": 9,
+    "critic_score": 95,
+    "audience_score": 90,
+    "ending_satisfaction": 0.5,
+    "pacing_score": 0.5,
+    "placeholder_fields": [
+      "ending_satisfaction",
+      "pacing_score"
+    ]
+  },
+  {
+    "id": "m/violeta_went_to_heaven",
+    "title": "Violeta Went to Heaven",
+    "year": 2013,
+    "runtime_minutes": 110,
+    "content_rating": "NR",
+    "genres": [
+      "Art House & International",
+      "Drama"
+    ],
+    "directors": "Andrés Wood",
+    "description": "Chile's Violeta Parra (Francisca Gavilán) rises from poverty to become a celebrated and influential musician, poet and activist.",
+    "verdict": "Crowd Pleaser",
+    "verdict_probabilities": {
+      "Arthouse Slog": 0.39,
+      "Crowd Pleaser": 0.485,
+      "Hidden Gem": 0.125,
+      "Overhyped": 0.0
+    },
+    "regret_score": 16,
+    "critic_score": 73,
+    "audience_score": 83,
+    "ending_satisfaction": 0.5,
+    "pacing_score": 0.5,
+    "placeholder_fields": [
+      "ending_satisfaction",
+      "pacing_score"
+    ]
+  },
+  {
+    "id": "m/abuse_of_weakness",
+    "title": "Abuse of Weakness",
+    "year": 2014,
+    "runtime_minutes": 105,
+    "content_rating": "NR",
+    "genres": [
+      "Drama"
+    ],
+    "directors": "Catherine Breillat",
+    "description": "A charismatic con artist becomes close to Maud, a famous director, after she has a stroke. He makes her feel alive again, and she lets him borrow huge sums of money.",
+    "verdict": "Arthouse Slog",
+    "verdict_probabilities": {
+      "Arthouse Slog": 0.605,
+      "Crowd Pleaser": 0.225,
+      "Hidden Gem": 0.15,
+      "Overhyped": 0.02
+    },
+    "regret_score": 32,
+    "critic_score": 85,
+    "audience_score": 54,
+    "ending_satisfaction": 0.5,
+    "pacing_score": 0.5,
+    "placeholder_fields": [
+      "ending_satisfaction",
+      "pacing_score"
+    ]
+  },
+  {
+    "id": "m/bloodshot_2020",
+    "title": "Bloodshot",
+    "year": 2020,
+    "runtime_minutes": 109,
+    "content_rating": "PG-13",
+    "genres": [
+      "Action & Adventure",
+      "Science Fiction & Fantasy"
+    ],
+    "directors": "David S. F. Wilson",
+    "description": "Recently killed in action, soldier Ray Garrison gets a new lease on life when the RST Corp. brings him back from the dead. With an army of nanotechnology in his veins, he's an unstoppable force -- stronger than ever with the power to heal instantly. But when the company decides to manipulate his mind and memories, Garrison must embark on a desperate mission to find out what's real and what's not.",
+    "verdict": "Hidden Gem",
+    "verdict_probabilities": {
+      "Arthouse Slog": 0.05,
+      "Crowd Pleaser": 0.025,
+      "Hidden Gem": 0.865,
+      "Overhyped": 0.06
+    },
+    "regret_score": 11,
+    "critic_score": 30,
+    "audience_score": 78,
+    "ending_satisfaction": 0.5,
+    "pacing_score": 0.5,
+    "placeholder_fields": [
+      "ending_satisfaction",
+      "pacing_score"
+    ]
+  },
+  {
+    "id": "m/shark_night_3d",
+    "title": "Shark Night 3D",
+    "year": 2011,
+    "runtime_minutes": 91,
+    "content_rating": "PG-13",
+    "genres": [
+      "Horror",
+      "Mystery & Suspense"
+    ],
+    "directors": "David R. Ellis",
+    "description": "Newly arrived at her family's lake-island cabin, college student Sara (Sara Paxton) and her friends prepare for a weekend of fun in the sun. But soon after they dive into the lake, football player Malik (Sinqua Walls) stumbles out of the water with a grievous wound. Thinking Malik is the victim of a freak accident, the friends pile into a tiny speedboat and head for the hospital. To their horror, they discover that they are surrounded by hundreds of massive, hungry sharks.",
+    "verdict": "Overhyped",
+    "verdict_probabilities": {
+      "Arthouse Slog": 0.14,
+      "Crowd Pleaser": 0.095,
+      "Hidden Gem": 0.09,
+      "Overhyped": 0.675
+    },
+    "regret_score": 56,
+    "critic_score": 18,
+    "audience_score": 22,
+    "ending_satisfaction": 0.5,
+    "pacing_score": 0.5,
+    "placeholder_fields": [
+      "ending_satisfaction",
+      "pacing_score"
+    ]
+  }
+]

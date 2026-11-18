@@ -1,0 +1,182 @@
+{
+  "labels": [
+    "Arthouse Slog",
+    "Crowd Pleaser",
+    "Hidden Gem",
+    "Overhyped"
+  ],
+  "best": "RandomForest v2",
+  "results": {
+    "Baseline (majority)": {
+      "cv_macro_f1_mean": 0.1722,
+      "cv_macro_f1_std": 0.0,
+      "test_accuracy": 0.5253,
+      "test_macro_precision": 0.1313,
+      "test_macro_recall": 0.25,
+      "test_macro_f1": 0.1722,
+      "confusion_matrix": [
+        [
+          0,
+          341,
+          0,
+          0
+        ],
+        [
+          0,
+          1047,
+          0,
+          0
+        ],
+        [
+          0,
+          306,
+          0,
+          0
+        ],
+        [
+          0,
+          299,
+          0,
+          0
+        ]
+      ]
+    },
+    "RandomForest v2": {
+      "cv_macro_f1_mean": 0.5129,
+      "cv_macro_f1_std": 0.0045,
+      "test_accuracy": 0.5976,
+      "test_macro_precision": 0.5232,
+      "test_macro_recall": 0.5394,
+      "test_macro_f1": 0.5131,
+      "confusion_matrix": [
+        [
+          176,
+          120,
+          11,
+          34
+        ],
+        [
+          148,
+          732,
+          53,
+          114
+        ],
+        [
+          50,
+          131,
+          55,
+          70
+        ],
+        [
+          12,
+          45,
+          14,
+          228
+        ]
+      ]
+    },
+    "LogisticRegression": {
+      "cv_macro_f1_mean": 0.4856,
+      "cv_macro_f1_std": 0.0051,
+      "test_accuracy": 0.5283,
+      "test_macro_precision": 0.482,
+      "test_macro_recall": 0.5238,
+      "test_macro_f1": 0.4928,
+      "confusion_matrix": [
+        [
+          176,
+          83,
+          42,
+          40
+        ],
+        [
+          198,
+          563,
+          182,
+          104
+        ],
+        [
+          47,
+          87,
+          114,
+          58
+        ],
+        [
+          28,
+          31,
+          40,
+          200
+        ]
+      ]
+    },
+    "LinearSVC": {
+      "cv_macro_f1_mean": 0.4671,
+      "cv_macro_f1_std": 0.008,
+      "test_accuracy": 0.5419,
+      "test_macro_precision": 0.4659,
+      "test_macro_recall": 0.4814,
+      "test_macro_f1": 0.4723,
+      "confusion_matrix": [
+        [
+          146,
+          124,
+          38,
+          33
+        ],
+        [
+          152,
+          678,
+          124,
+          93
+        ],
+        [
+          42,
+          129,
+          83,
+          52
+        ],
+        [
+          35,
+          50,
+          41,
+          173
+        ]
+      ]
+    },
+    "RF + LogReg (soft vote)": {
+      "cv_macro_f1_mean": 0.5108,
+      "cv_macro_f1_std": 0.0078,
+      "test_accuracy": 0.5735,
+      "test_macro_precision": 0.5105,
+      "test_macro_recall": 0.5497,
+      "test_macro_f1": 0.5226,
+      "confusion_matrix": [
+        [
+          189,
+          96,
+          24,
+          32
+        ],
+        [
+          175,
+          644,
+          124,
+          104
+        ],
+        [
+          50,
+          97,
+          96,
+          63
+        ],
+        [
+          22,
+          32,
+          31,
+          214
+        ]
+      ]
+    }
+  },
+  "n_train_movies": 9965
+}
