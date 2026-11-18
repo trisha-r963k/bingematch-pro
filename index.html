@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BingeMatch Pro | Anti-Regret Movie Finder</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for cinematic icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Linked Custom CSS stylesheet -->
+    <link rel="stylesheet" href="style.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#0b0b0e',
+                        cardBg: '#141419',
+                        accentRed: '#e50914',
+                        crimsonGlow: '#ff1e2b'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen flex flex-col bg-[#0b0b0e] selection:bg-red-600 selection:text-white">
+
+    <!-- FULL-SCREEN STARTING AUTH GATE (Login / Register / Forgot Password) -->
+    <div id="loginGate" class="fixed inset-0 z-[100] bg-[#0b0b0e] flex items-center justify-center p-4">
+        <div class="bg-neutral-900 border border-neutral-800 rounded-3xl p-8 lg:p-10 max-w-md w-full shadow-2xl space-y-6 relative">
+            
+            <!-- Logo Header -->
+            <div class="space-y-3 text-center">
+                <div class="inline-flex bg-gradient-to-br from-red-600 to-red-800 p-3.5 rounded-2xl text-white shadow-lg glow-red mb-1">
+                    <i class="fa-solid fa-film text-2xl"></i>
+                </div>
+                <h1 id="authTitle" class="text-2xl lg:text-3xl font-black tracking-wider text-white">BINGEMATCH<span class="text-red-600">PRO</span></h1>
+                <p id="authSubtitle" class="text-xs text-neutral-400">Please sign in to access the anti-regret cinema engine</p>
+            </div>
+
+            <!-- 1. LOGIN FORM -->
+            <form id="loginFormContainer" onsubmit="handleLoginSubmit(event)" class="space-y-4">
+                <div class="space-y-1">
+                    <label class="block text-xs font-bold text-neutral-300 uppercase tracking-wider">Username</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-user absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500 text-sm"></i>
+                        <input type="text" id="loginUsername" required placeholder="Enter your username" 
+                            class="w-full bg-neutral-950 border border-neutral-800 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-red-600 transition font-medium">
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <div class="flex justify-between items-center text-xs">
+                        <label class="font-bold text-neutral-300 uppercase tracking-wider">Password</label>
+                        <button type="button" onclick="switchAuthView('forgot')" class="text-red-500 hover:underline font-semibold">Forgot Password?</button>
+                    </div>
+                    <div class="relative mt-1">
+                        <i class="fa-solid fa-key absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500 text-sm"></i>
+                        <input type="password" id="loginPassword" required placeholder="••••••••" 
+                            class="w-full bg-neutral-950 border border-neutral-800 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-red-600 transition font-medium">
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white py-3.5 rounded-xl font-bold transition shadow-lg shadow-red-600/30 text-sm flex items-center justify-center space-x-2 mt-2">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    <span>Login & Enter</span>
+                </button>
+
+                <div class="text-center pt-2 text-xs text-neutral-400">
+                    Don't have an account? <button type="button" onclick="switchAuthView('signup')" class="text-white font-bold hover:text-red-500 underline ml-1">Create New Account</button>
+                </div>
+            </form>
+
+            <!-- 2. SIGN UP (NEW USER) FORM -->
+            <form id="signupFormContainer" onsubmit="handleSignupSubmit(event)" class="space-y-4 hidden">
+                <div class="space-y-1">
+                    <label class="block text-xs font-bold text-neutral-300 uppercase tracking-wider">Choose Username</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-user-plus absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500 text-sm"></i>
+                        <input type="text" id="signupUsername" required placeholder="Pick a username" 
+                            class="w-full bg-neutral-950 border border-neutral-800 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-red-600 transition font-medium">
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="block text-xs font-bold text-neutral-300 uppercase tracking-wider">Email Address</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500 text-sm"></i>
+                        <input type="email" id="signupEmail" required placeholder="name@example.com" 
+                            class="w-full bg-neutral-950 border border-neutral-800 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-red-600 transition font-medium">
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="block text-xs font-bold text-neutral-300 uppercase tracking-wider">Create Password</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-key absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500 text-sm"></i>
+                        <input type="password" id="signupPassword" required placeholder="••••••••" 
+                            class="w-full bg-neutral-950 border border-neutral-800 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-red-600 transition font-medium">
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white py-3.5 rounded-xl font-bold transition shadow-lg shadow-red-600/30 text-sm flex items-center justify-center space-x-2 mt-2">
+                    <i class="fa-solid fa-user-check"></i>
+                    <span>Register & Start BingeMatch</span>
+                </button>
+
+                <div class="text-center pt-2 text-xs text-neutral-400">
+                    Already have an account? <button type="button" onclick="switchAuthView('login')" class="text-white font-bold hover:text-red-500 underline ml-1">Login here</button>
+                </div>
+            </form>
+
+            <!-- 3. FORGOT PASSWORD FORM -->
+            <form id="forgotFormContainer" onsubmit="handleForgotSubmit(event)" class="space-y-4 hidden">
+                <div class="space-y-1">
+                    <label class="block text-xs font-bold text-neutral-300 uppercase tracking-wider">Registered Email</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500 text-sm"></i>
+                        <input type="email" id="forgotEmail" required placeholder="Enter your account email" 
+                            class="w-full bg-neutral-950 border border-neutral-800 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-red-600 transition font-medium">
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white py-3.5 rounded-xl font-bold transition shadow-lg shadow-red-600/30 text-sm flex items-center justify-center space-x-2 mt-2">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>Send Reset Instructions</span>
+                </button>
+
+                <div class="text-center pt-2 text-xs text-neutral-400">
+                    Remembered your password? <button type="button" onclick="switchAuthView('login')" class="text-white font-bold hover:text-red-500 underline ml-1">Back to Login</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- MAIN APP CONTENT (Hidden until login) -->
+    <div id="mainApp" class="hidden flex-1 flex-col relative min-h-screen">
+        
+        <!-- FIXED BACKGROUND VIDEO LAYER -->
+        <div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+            <video autoplay muted loop playsinline id="bgVideo" class="w-full h-full object-cover opacity-75">
+                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4">
+            </video>
+            <!-- Dark Overlay -->
+            <div class="absolute inset-0 bg-[#0b0b0e]/75"></div>
+        </div>
+
+        <!-- Top Navigation Bar -->
+        <header class="sticky top-0 z-50 bg-[#0b0b0e]/85 backdrop-blur-md border-b border-neutral-800 px-4 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
+            <!-- Logo & Categories -->
+            <div class="flex items-center space-x-6 lg:space-x-8">
+                <div class="flex items-center space-x-2.5 cursor-pointer" onclick="resetFilters()">
+                    <div class="bg-gradient-to-br from-red-600 to-red-800 p-2 rounded-lg text-white shadow-lg glow-red">
+                        <i class="fa-solid fa-film text-xl"></i>
+                    </div>
+                    <span class="text-xl lg:text-2xl font-black tracking-wider text-white">BINGEMATCH<span class="text-red-600">PRO</span></span>
+                </div>
+                
+                <nav class="hidden md:flex items-center space-x-2 bg-neutral-900/80 p-1 rounded-xl border border-neutral-800">
+                    <button onclick="setCategory('All')" id="cat-All" class="px-4 py-1.5 rounded-lg text-sm font-semibold transition bg-red-600 text-white shadow">All Cinema</button>
+                    <button onclick="setCategory('Hollywood')" id="cat-Hollywood" class="px-4 py-1.5 rounded-lg text-sm font-semibold transition text-neutral-400 hover:text-white">Hollywood</button>
+                    <button onclick="setCategory('Bollywood')" id="cat-Bollywood" class="px-4 py-1.5 rounded-lg text-sm font-semibold transition text-neutral-400 hover:text-white">Bollywood</button>
+                </nav>
+            </div>
+
+            <!-- Profile / User area & Logout Button on top right -->
+            <div class="flex items-center space-x-3">
+                <div class="flex items-center space-x-2 bg-neutral-900/80 border border-neutral-800 px-3 py-1.5 rounded-full">
+                    <div id="userAvatarLetter" class="w-7 h-7 bg-red-600 rounded-full flex items-center justify-center font-bold text-xs text-white">H</div>
+                    <span id="displayUsername" class="text-sm font-medium hidden sm:inline text-neutral-200">homraj</span>
+                </div>
+                <!-- Logout Button -->
+                <button onclick="handleLogout()" title="Logout" class="bg-neutral-900/80 hover:bg-red-600/20 text-neutral-300 hover:text-red-500 border border-neutral-800 hover:border-red-600/40 px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center space-x-1.5">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content Layout with Side-by-Side Featured Banner & Control Box -->
+        <div class="flex-1 max-w-[1800px] mx-auto w-full p-4 lg:p-8 space-y-8 relative z-10">
+            
+            <!-- Hero Section: Featured Banner on Left (Animated Background Added), Control Box on Right -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+                
+                <!-- Featured Hollywood Spotlight Banner (Tenet) with ANIMATED Gradient Background -->
+                <div id="featuredBanner" class="lg:col-span-7 relative rounded-2xl overflow-hidden border border-red-600/40 shadow-2xl p-6 lg:p-8 flex flex-col justify-end min-h-[460px]">
+                    <!-- Animated Gradient Background Layer -->
+                    <div class="absolute inset-0 animated-spotlight-bg -z-10"></div>
+                    <!-- Image Overlay -->
+                    <div class="absolute inset-0 bg-cover bg-center opacity-30 mix-blend-overlay -z-10" style="background-image: url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=1600&q=80')"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#0b0b0e] via-[#0b0b0e]/70 to-transparent -z-10"></div>
+                    
+                    <div class="relative z-10 space-y-4 max-w-xl">
+                        <div class="inline-flex items-center space-x-2 bg-red-950/80 border border-red-800/60 px-3 py-1 rounded-full text-xs font-semibold text-red-300">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span>FEATURED SPOTLIGHT • HIGH REGRET RISK (76%)</span>
+                        </div>
+                        
+                        <h1 class="text-3xl lg:text-5xl font-black text-white tracking-tight">TENET <span class="text-neutral-400 font-normal text-xl lg:text-2xl">(2020)</span></h1>
+                        
+                        <div class="flex flex-wrap items-center gap-3 text-sm font-medium text-neutral-300">
+                            <span class="bg-red-600/20 text-red-400 border border-red-600/30 px-2.5 py-0.5 rounded">HIGH REGRET RISK: 76%</span>
+                            <span class="bg-neutral-800 px-2.5 py-0.5 rounded">Hollywood</span>
+                            <span class="text-neutral-400">150 mins</span>
+                            <span class="text-neutral-500">•</span>
+                            <span class="text-neutral-300">Sci-Fi / Thriller</span>
+                        </div>
+                        
+                        <p class="text-neutral-300 text-xs lg:text-sm leading-relaxed line-clamp-2">
+                            Armed with only one word—Tenet—and fighting for the survival of the entire world, a Protagonist journeys through a twilight world of international espionage on a mission that unfolds beyond real time.
+                        </p>
+                        
+                        <div class="flex flex-wrap items-center gap-3 pt-1">
+                            <button onclick="openMovieDetails(0)" class="bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 rounded-xl font-bold transition shadow-lg shadow-red-600/30 flex items-center space-x-2 text-sm">
+                                <i class="fa-solid fa-shield-halved"></i>
+                                <span>Check Regret Analysis</span>
+                            </button>
+                            <button onclick="openMovieDetails(0)" class="bg-neutral-900 hover:bg-neutral-800 text-white border border-neutral-700 px-5 py-2.5 rounded-xl font-bold transition flex items-center space-x-2 text-sm">
+                                <i class="fa-solid fa-compass"></i>
+                                <span>See Alternatives</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Control Box on Right Side of Tenet -->
+                <div class="lg:col-span-5 bg-neutral-900/85 backdrop-blur-md text-neutral-100 rounded-2xl p-6 shadow-2xl border border-neutral-800 flex flex-col justify-between space-y-4">
+                    <div class="space-y-4">
+                        <div class="flex flex-wrap items-center justify-between border-b border-neutral-800 pb-3 gap-2">
+                            <h3 class="font-extrabold text-white flex items-center space-x-2 text-sm">
+                                <i class="fa-solid fa-sliders text-red-600"></i>
+                                <span>Search & Cinema Filters Hub</span>
+                            </h3>
+                            <div class="flex items-center space-x-3">
+                                <button onclick="randomSafePick()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-1.5 px-3 rounded-lg shadow transition flex items-center space-x-1.5 text-xs">
+                                    <i class="fa-solid fa-dice"></i>
+                                    <span>Surprise Safe</span>
+                                </button>
+                                <button onclick="resetFilters()" class="text-xs font-bold text-red-500 hover:underline">Reset</button>
+                            </div>
+                        </div>
+
+                        <!-- Search Input with Button -->
+                        <div class="space-y-1">
+                            <label class="block text-xs font-bold text-neutral-300 uppercase tracking-wider">
+                                <i class="fa-solid fa-search text-red-600 mr-1"></i>Search Movie (Opens New Tab)
+                            </label>
+                            <div class="flex items-center space-x-2">
+                                <div class="relative flex-1">
+                                    <i class="fa-solid fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500 text-sm"></i>
+                                    <input type="text" id="searchInput" onkeydown="handleSearchKey(event)" placeholder="Type movie & press Enter..." 
+                                        class="w-full bg-neutral-950/90 border border-neutral-800 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-red-600 transition shadow-sm font-medium">
+                                </div>
+                                <button onclick="triggerSearchTab()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2.5 rounded-xl font-bold text-sm shadow transition flex items-center space-x-1 shrink-0">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                    <span>Search</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Watch Time & Duration Option -->
+                        <div class="space-y-1">
+                            <label class="block text-xs font-bold text-neutral-300 uppercase tracking-wider">
+                                <i class="fa-regular fa-clock text-red-600 mr-1"></i>Watch Time / Duration
+                            </label>
+                            <select id="durationFilter" onchange="applyFilters()" class="w-full bg-neutral-950/90 border border-neutral-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-red-600 font-medium">
+                                <option value="all">Any Duration / Watch Time</option>
+                                <option value="short">Under 120 mins (&lt; 2h)</option>
+                                <option value="medium">120 - 150 mins</option>
+                                <option value="long">Over 150 mins (&gt; 2.5h)</option>
+                            </select>
+                        </div>
+
+                        <!-- Pacing Mood Option -->
+                        <div class="space-y-1">
+                            <label class="block text-xs font-bold text-neutral-300 uppercase tracking-wider">
+                                <i class="fa-solid fa-bolt text-red-600 mr-1"></i>Pacing Mood
+                            </label>
+                            <select id="pacingFilter" onchange="applyFilters()" class="w-full bg-neutral-950/90 border border-neutral-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-red-600 font-medium">
+                                <option value="all">Any Pacing Mood</option>
+                                <option value="fast">Fast & Thrilling</option>
+                                <option value="balanced">Balanced & Engaging</option>
+                                <option value="slow">Slow Burn / Deep</option>
+                            </select>
+                        </div>
+
+                        <!-- Regret Risk Filter Slider -->
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center text-xs font-bold text-neutral-300">
+                                <span><i class="fa-solid fa-triangle-exclamation text-red-600 mr-1"></i>Max Regret Risk</span>
+                                <span id="riskMeterLabel" class="text-red-500">All Levels</span>
+                            </div>
+                            <input type="range" id="riskSlider" min="20" max="100" value="100" step="5" oninput="filterByRisk(this.value)" class="w-full accent-red-600 cursor-pointer pt-1">
+                        </div>
+                    </div>
+
+                    <!-- Quick Genre Pills -->
+                    <div class="pt-2 border-t border-neutral-800">
+                        <span class="text-[11px] font-bold text-neutral-400 uppercase tracking-wider block mb-1.5">Popular Genres:</span>
+                        <div id="genrePills" class="flex flex-wrap gap-1">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Movie Catalog Header & Count -->
+            <div class="flex items-center justify-between border-b border-neutral-800 pb-4 pt-4">
+                <div class="flex items-center space-x-3">
+                    <h2 class="text-xl lg:text-2xl font-bold text-white flex items-center space-x-2">
+                        <i class="fa-solid fa-film text-red-600"></i>
+                        <span id="catalogTitle">Curated Masterpieces & Blockbusters</span>
+                    </h2>
+                    <span id="movieCountBadge" class="bg-neutral-900/90 border border-neutral-800 px-3 py-1 rounded-full text-xs font-semibold text-neutral-400">380 Movies</span>
+                </div>
+                <div class="text-sm text-neutral-400 hidden sm:block">Click any movie to open details in a new tab</div>
+            </div>
+
+            <!-- Movie Grid -->
+            <div id="movieGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                <!-- Populated by JavaScript -->
+            </div>
+            
+            <!-- Load More Button -->
+            <div id="loadMoreContainer" class="text-center pt-6 pb-12">
+                <button onclick="loadMoreMovies()" class="bg-neutral-900/90 hover:bg-neutral-800 text-white border border-neutral-700 px-8 py-3 rounded-xl font-bold transition">
+                    Load More Masterpieces
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="bg-neutral-950/90 border-t border-neutral-900 text-neutral-500 py-8 px-4 text-center text-xs mt-12 space-y-3 relative z-10">
+            <div class="flex items-center justify-center space-x-2 text-white font-bold text-base">
+                <i class="fa-solid fa-film text-red-600"></i>
+                <span>BINGEMATCH PRO</span>
+            </div>
+            <p>The ultimate anti-regret cinematic discovery engine featuring 380+ curated Hollywood & Bollywood masterpieces.</p>
+            <p class="text-neutral-600">&copy; 2026 BingeMatch Pro Inc. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- Linked JavaScript Application Logic -->
+    <script src="new.js"></script>
+</body>
+</html>
