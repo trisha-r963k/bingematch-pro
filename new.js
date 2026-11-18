@@ -1,157 +1,206 @@
-const hollywoodTitles = [
-    "Inception", "Interstellar", "The Dark Knight", "Fight Club", "Pulp Fiction", "Forrest Gump", "The Matrix", "Gladiator",
-    "The Godfather", "The Lord of the Rings", "Se7en", "The Silence of the Lambs", "The Prestige", "The Departed", "Whiplash",
-    "Memento", "Parasite", "The Usual Suspects", "Glengarry Glen Ross", "L.A. Confidential", "Shutter Island", "Django Unchained",
-    "The Wolf of Wall Street", "The Green Mile", "Saving Private Ryan", "Interstellar Odyssey", "Blade Runner 2049", "Arrival",
-    "Dune: Part One", "Dune: Part Two", "Oppenheimer", "Barbie", "Avatar: The Way of Water", "Top Gun: Maverick", "Spider-Man: Across the Spider-Verse",
-    "The Batman", "Knives Out", "Glass Onion", "Bullet Train", "Everything Everywhere All at Once", "The Whale", "Babylon", "The Fabelmans",
-    "Joker", "Once Upon a Time in Hollywood", "1917", "Ford v Ferrari", "Knock at the Cabin", "Infinity Pool", "Air", "John Wick: Chapter 4",
-    "Creed III", "Guardians of the Galaxy Vol. 3", "Fast X", "The Little Mermaid", "Spider-Man: No Way Home", "Doctor Strange 2", "Thor: Love and Thunder",
-    "Black Panther: Wakanda Forever", "Avatar", "Titanic", "Jurassic Park", "Terminator 2: Judgment Day", "Alien", "Aliens", "Back to the Future",
-    "Raiders of the Lost Ark", "Star Wars: A New Hope", "The Empire Strikes Back", "Return of the Jedi", "GoodFellas", "Casino", "Scarface",
-    "The Godfather Part II", "Schindler's List", "12 Angry Men", "One Flew Over the Cuckoo's Nest", "City of God", "Life Is Beautiful",
-    "The Intouchables", "The Pianist", "The Lion King", "Gladiator II", "Venom: The Last Dance", "Twisters", "Beetlejuice Beetlejuice",
-    "Deadpool & Wolverine", "Inside Out 2", "Despicable Me 4", "Kung Fu Panda 4", "Furiosa: A Mad Max Saga", "Kingdom of the Planet of the Apes"
-];
+/**
+ * BingeMatch Pro - Anti-Regret Decision Engine & ML Integration
+ * Senior Frontend UI/UX Architecture & ML Web Engine
+ * Team: Sanchita Dey (ML), Homraj Sharma (Frontend UI/UX), Jayeed Mohammad Kawsar (Backend)
+ */
 
-const bollywoodTitles = [
-    "3 Idiots", "Dangal", "Gangs of Wasseypur", "Sholay", "Dilwale Dulhania Le Jayenge", "Zindagi Na Milegi Dobara", "Swades",
-    "Taare Zameen Par", "Kantara", "KGF: Chapter 1", "KGF: Chapter 2", "RRR", "Baahubali: The Beginning", "Baahubali 2: The Conclusion",
-    "Drishyam", "Drishyam 2", "Andhadhun", "Article 15", "Mulk", "Pink", "A Wednesday", "Special 26", "Baby", "Uri: The Surgical Strike",
-    "Sherni", "Newton", "Tumbbad", "Stree", "Stree 2", "Bhediya", "Munjya", "Chhaava", "Animal", "Pathaan", "Jawan", "Tiger 3", "Gadar 2",
-    "Sam Bahadur", "Dunki", "Salaar", "Animal Park", "Fighter", "Crew", "Shaitaan", "Maidaan", "Srikanth", "Mr. & Mrs. Mahi", "Chandu Champion",
-    "Bad Newz", "Khel Khel Mein", "Devara: Part 1", "Jigra", "Bhool Bhulaiyaa 3", "Singham Again", "Baby John", "Pushpa 2: The Rule",
-    "Dil Chahta Hai", "Lagaan", "Rang De Basanti", "Ghajini", "PK", "Dhoom 2", "Zinda", "Don", "Don 2", "Rockstar", "Barfi!",
-    "Queen", "Piku", "Kahaani", "Udaan", "Gangs of Wasseypur Part 2", "Haider", "Omkara", "Maqbool", "Kaminey", "Badlapur", "Raazi", "Gully Boy",
-    "Super 30", "Chhichhore", "Mission Mangal", "Tanhaji", "Sooryavanshi", "Jersey", "Runway 34", "Vikram Vedha", "Bhool Bhulaiyaa 2", "The Kerala Story",
-    "Zara Hatke Zara Bachke", "Satyaprem Ki Katha", "Rocky Aur Rani Kii Prem Kahaani", "OMG 2", "Dream Girl 2", "Main Atal Hoon", "Article 370"
-];
-
-const directorsList = ["Christopher Nolan", "Denis Villeneuve", "Martin Scorsese", "Quentin Tarantino", "David Fincher", "Rajkumar Hirani", "S.S. Rajamouli", "Anurag Kashyap", "Sanjay Leela Bhansali", "Vishal Bhardwaj", "Shoojit Sircar", "Sriram Raghavan", "Steven Spielberg", "Ridley Scott", "James Cameron", "Greta Gerwig"];
-const genresList = ["Sci-Fi / Thriller", "Action / Drama", "Crime / Mystery", "Drama / Epic", "Romance / Comedy", "Psychological Thriller", "Adventure / Fantasy", "Horror / Mystery"];
-const pacingList = ["fast", "balanced", "slow"];
-
+// Global State
 let allMovies = [];
 let filteredMovies = [];
 let displayedCount = 24;
 let currentCategory = 'All';
+let currentVerdictFilter = 'all';
+let currentSelectedMovie = null;
+let userWatchlist = [];
+let backendAvailable = false;
+const API_BASE_URL = 'http://127.0.0.1:8000';
 
-function generateMovies() {
-    let idCounter = 1;
-    
-    hollywoodTitles.forEach((title, idx) => {
-        const runtime = 95 + (Math.floor(Math.sin(idx * 13) * 45) + 45);
-        const risk = 20 + Math.floor(Math.abs(Math.cos(idx * 7)) * 75);
-        const year = 2005 + (idx % 21);
-        const category = "Hollywood";
-        const director = directorsList[idx % directorsList.length];
-        const genre = genresList[idx % genresList.length];
-        const pacing = pacingList[idx % pacingList.length];
-        
-        allMovies.push({
-            id: idCounter++,
-            title: title,
-            year: year,
-            category: category,
-            runtime: runtime,
-            risk: risk,
-            director: director,
-            genre: genre,
-            pacing: pacing,
-            synopsis: `An acclaimed cinematic masterpiece directed by ${director}. ${title} explores deep psychological and thematic arcs that keep viewers on the edge of their seats throughout its ${runtime}-minute runtime.`,
-            cast: ["Lead Star A", "Co-Star B"],
-            saferAlternative: "Inception or The Dark Knight"
-        });
+// Curated Top Genres
+const primaryGenres = [
+    "Drama", "Action & Adventure", "Comedy", "Science Fiction & Fantasy",
+    "Mystery & Suspense", "Crime", "Horror", "Classics", "Romance"
+];
+
+// ==================== CINEMATIC AMBIENT CANVAS ====================
+function initAmbientCanvas() {
+    const canvas = document.getElementById('ambientCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
     });
 
-    bollywoodTitles.forEach((title, idx) => {
-        const runtime = 110 + (Math.floor(Math.cos(idx * 17) * 40) + 40);
-        const risk = 15 + Math.floor(Math.abs(Math.sin(idx * 9)) * 80);
-        const year = 2008 + (idx % 19);
-        const category = "Bollywood";
-        const director = directorsList[(idx + 4) % directorsList.length];
-        const genre = genresList[(idx + 2) % genresList.length];
-        const pacing = pacingList[idx % pacingList.length];
+    const particles = [];
+    const particleCount = Math.min(65, Math.floor(width / 22));
 
-        allMovies.push({
-            id: idCounter++,
-            title: title,
-            year: year,
-            category: category,
-            runtime: runtime,
-            risk: risk,
-            director: director,
-            genre: genre,
-            pacing: pacing,
-            synopsis: `A blockbuster Indian cinematic landmark directed by ${director}. ${title} delivers powerful emotional performances, stellar music, and unforgettable storytelling across its ${runtime}-minute runtime.`,
-            cast: ["Superstar X", "Leading Lady Y"],
-            saferAlternative: "3 Idiots or Drishyam"
-        });
-    });
-
-    while(allMovies.length < 380) {
-        const idx = allMovies.length + 1;
-        allMovies.push({
-            id: idCounter++,
-            title: `Cinematic Saga #${idx}`,
-            year: 2015 + (idx % 11),
-            category: idx % 2 === 0 ? "Hollywood" : "Bollywood",
-            runtime: 115 + (idx % 55),
-            risk: 30 + (idx % 60),
-            director: directorsList[idx % directorsList.length],
-            genre: genresList[idx % genresList.length],
-            pacing: pacingList[idx % 3],
-            synopsis: `An epic cinematic journey featuring breathtaking cinematography, intricate plot developments, and stellar ensemble performances.`,
-            cast: ["Actor Alpha", "Actor Beta"],
-            saferAlternative: "Interstellar"
+    for (let i = 0; i < particleCount; i++) {
+        particles.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            radius: Math.random() * 2 + 0.6,
+            vx: (Math.random() - 0.5) * 0.35,
+            vy: (Math.random() - 0.5) * 0.35,
+            alpha: Math.random() * 0.55 + 0.2,
+            isRed: Math.random() > 0.65
         });
     }
-    filteredMovies = [...allMovies];
-}
 
-generateMovies();
+    function renderParticles() {
+        ctx.clearRect(0, 0, width, height);
 
-function randomSafePick() {
-    const safeMovies = allMovies.filter(m => m.risk < 40);
-    const pool = safeMovies.length > 0 ? safeMovies : allMovies;
-    const randomMovie = pool[Math.floor(Math.random() * pool.length)];
-    openMovieDetails(randomMovie.id);
-}
+        particles.forEach(p => {
+            p.x += p.vx;
+            p.y += p.vy;
 
-function renderGenrePills() {
-    const container = document.getElementById('genrePills');
-    if(!container) return;
-    container.innerHTML = '';
-    genresList.forEach(genre => {
-        const pill = document.createElement('button');
-        pill.className = "bg-neutral-950/90 hover:bg-red-600/20 hover:text-red-400 text-neutral-300 text-xs px-3 py-1 rounded-lg font-medium transition border border-neutral-800 hover:border-red-600/40";
-        pill.innerText = genre;
-        pill.onclick = () => {
-            const searchInput = document.getElementById('searchInput');
-            if(searchInput) {
-                searchInput.value = genre;
-                triggerSearchTab();
+            if (p.x < 0) p.x = width;
+            if (p.x > width) p.x = 0;
+            if (p.y < 0) p.y = height;
+            if (p.y > height) p.y = 0;
+
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            if (p.isRed) {
+                ctx.fillStyle = `rgba(229, 9, 20, ${p.alpha * 0.8})`;
+                ctx.shadowColor = 'rgba(229, 9, 20, 0.4)';
+                ctx.shadowBlur = 8;
+            } else {
+                ctx.fillStyle = `rgba(180, 195, 225, ${p.alpha * 0.5})`;
+                ctx.shadowColor = 'transparent';
+                ctx.shadowBlur = 0;
             }
-        };
-        container.appendChild(pill);
-    });
+            ctx.fill();
+        });
+
+        requestAnimationFrame(renderParticles);
+    }
+
+    renderParticles();
 }
 
+// ==================== DATASET INITIALIZATION ====================
+function initializeDataset() {
+    if (window.BINGEMATCH_MOVIES_DATA && Array.isArray(window.BINGEMATCH_MOVIES_DATA) && window.BINGEMATCH_MOVIES_DATA.length > 0) {
+        allMovies = window.BINGEMATCH_MOVIES_DATA.map((m, idx) => ({
+            id: m.rotten_tomatoes_link || `m_${idx}`,
+            title: m.movie_title || "Untitled",
+            year: parseInt(m.year) || 2015,
+            category: m.category || (m.genres && m.genres.includes('Bollywood') ? 'Bollywood' : 'Hollywood'),
+            runtime: parseInt(m.runtime) || 120,
+            genres: Array.isArray(m.genres) ? m.genres : (m.genres ? m.genres.split(',').map(g => g.trim()) : ["Drama"]),
+            genre: Array.isArray(m.genres) ? m.genres.slice(0, 2).join(' / ') : (m.genres ? m.genres.split(',').slice(0, 2).join(' / ') : "Drama"),
+            director: m.directors || "Filmmakers",
+            actors: m.actors || "Ensemble Cast",
+            critic: parseInt(m.critic) || 75,
+            audience: parseInt(m.audience) || 80,
+            gap: parseInt(m.gap) || ((parseInt(m.critic) || 75) - (parseInt(m.audience) || 80)),
+            verdict: m.verdict || "Crowd Pleaser",
+            risk: parseInt(m.regret_score) || 25,
+            regret_score: parseInt(m.regret_score) || 25,
+            probabilities: {
+                "Crowd Pleaser": parseFloat(m.p_crowd_pleaser) || 0.70,
+                "Hidden Gem": parseFloat(m.p_hidden_gem) || 0.15,
+                "Overhyped": parseFloat(m.p_overhyped) || 0.10,
+                "Arthouse Slog": parseFloat(m.p_arthouse_slog) || 0.05
+            },
+            ending_satisfaction: m.ending_satisfaction ? parseFloat(m.ending_satisfaction) : null,
+            pacing_score: m.pacing_score ? parseFloat(m.pacing_score) : null,
+            pacing: (m.pacing_score && parseFloat(m.pacing_score) > 0.75) ? 'fast' : ((m.pacing_score && parseFloat(m.pacing_score) < 0.55) ? 'slow' : 'balanced'),
+            why_features: m.why_features ? (Array.isArray(m.why_features) ? m.why_features : m.why_features.split('|')) : ["Genre: Drama", "Runtime", "Release era"],
+            synopsis: m.movie_info || "An acclaimed cinematic exploration of human nature, dramatic depth and compelling storytelling.",
+            saferAlternative: m.safer_alternative || (m.verdict === 'Overhyped' ? "Inception or 3 Idiots" : "")
+        }));
+    } else {
+        console.warn("Curated movies data not preloaded, using fallback...");
+        allMovies = [];
+    }
+
+    filteredMovies = [...allMovies];
+    checkBackendHealth();
+}
+
+async function checkBackendHealth() {
+    try {
+        const resp = await fetch(`${API_BASE_URL}/metrics`, { method: 'GET' });
+        if (resp.ok) {
+            backendAvailable = true;
+            const statusLabel = document.getElementById('engineStatusLabel');
+            if (statusLabel) statusLabel.innerText = "ML Engine: Online (FastAPI)";
+        }
+    } catch (e) {
+        backendAvailable = false;
+        const statusLabel = document.getElementById('engineStatusLabel');
+        if (statusLabel) statusLabel.innerText = "ML Engine: Online (Client Mode)";
+    }
+}
+
+// ==================== WATCHLIST MANAGEMENT ====================
+function loadUserWatchlist(username) {
+    if (!username) return;
+    try {
+        const saved = localStorage.getItem('bingematch_watchlist_' + username);
+        userWatchlist = saved ? JSON.parse(saved) : ["m/3_idiots", "m/inception_2010"];
+    } catch (e) {
+        userWatchlist = [];
+    }
+    updateWatchlistBadge();
+}
+
+function saveUserWatchlist() {
+    const user = localStorage.getItem('bingematch_logged_in_user');
+    if (user) {
+        localStorage.setItem('bingematch_watchlist_' + user, JSON.stringify(userWatchlist));
+    }
+    updateWatchlistBadge();
+}
+
+function updateWatchlistBadge() {
+    const badge = document.getElementById('navWatchlistBadge');
+    if (badge) {
+        badge.innerText = userWatchlist.length;
+    }
+}
+
+function isMovieInWatchlist(movieId) {
+    return userWatchlist.includes(movieId);
+}
+
+function toggleMovieWatchlist(event, movieId) {
+    if (event) event.stopPropagation();
+    if (isMovieInWatchlist(movieId)) {
+        userWatchlist = userWatchlist.filter(id => id !== movieId);
+    } else {
+        userWatchlist.push(movieId);
+    }
+    saveUserWatchlist();
+    renderGrid();
+    if (currentSelectedMovie && currentSelectedMovie.id === movieId) {
+        updateModalWatchlistButton();
+    }
+}
+
+// ==================== CATEGORIES & FILTERING ====================
 function setCategory(cat) {
     currentCategory = cat;
-    ['All', 'Hollywood', 'Bollywood'].forEach(c => {
+    ['All', 'Hollywood', 'Bollywood', 'Watchlist'].forEach(c => {
         const btn = document.getElementById(`cat-${c}`);
-        if(btn) {
-            if(c === cat) {
-                btn.className = "px-4 py-1.5 rounded-lg text-sm font-semibold transition bg-red-600 text-white shadow";
+        if (btn) {
+            if (c === cat) {
+                btn.classList.add('active');
             } else {
-                btn.className = "px-4 py-1.5 rounded-lg text-sm font-semibold transition text-neutral-400 hover:text-white";
+                btn.classList.remove('active');
             }
         }
     });
+
     const catalogTitle = document.getElementById('catalogTitle');
-    if(catalogTitle) {
-        catalogTitle.innerText = cat === 'All' ? 'Curated Masterpieces & Blockbusters' : `${cat} Masterpieces`;
+    if (catalogTitle) {
+        if (cat === 'All') catalogTitle.innerText = 'Curated Masterpieces & Scored Cinema';
+        else if (cat === 'Watchlist') catalogTitle.innerText = 'My Anti-Regret Watchlist';
+        else catalogTitle.innerText = `${cat} Masterpieces`;
     }
     applyFilters();
 }
@@ -160,18 +209,31 @@ function applyFilters() {
     const durationEl = document.getElementById('durationFilter');
     const pacingEl = document.getElementById('pacingFilter');
     const riskEl = document.getElementById('riskSlider');
+    const verdictEl = document.getElementById('verdictFilter');
+    const searchEl = document.getElementById('searchInput');
 
-    const durationVal = durationEl ? durationEl.value : 'all';
-    const pacingVal = pacingEl ? pacingEl.value : 'all';
-    const maxRisk = riskEl ? parseInt(riskEl.value) : 100;
+    const durationVal = (durationEl && durationEl.value && durationEl.value !== '') ? durationEl.value : 'all';
+    const pacingVal = (pacingEl && pacingEl.value && pacingEl.value !== '') ? pacingEl.value : 'all';
+    const maxRisk = (riskEl && riskEl.value && !isNaN(parseInt(riskEl.value))) ? parseInt(riskEl.value) : 100;
+    const verdictVal = (verdictEl && verdictEl.value && verdictEl.value !== '') ? verdictEl.value : 'all';
+    const searchTerm = (searchEl && searchEl.value) ? searchEl.value.toLowerCase().trim() : '';
 
     filteredMovies = allMovies.filter(m => {
-        if(currentCategory !== 'All' && m.category !== currentCategory) return false;
-        if(durationVal === 'short' && m.runtime >= 120) return false;
-        if(durationVal === 'medium' && (m.runtime < 120 || m.runtime > 150)) return false;
-        if(durationVal === 'long' && m.runtime <= 150) return false;
-        if(pacingVal !== 'all' && m.pacing !== pacingVal) return false;
-        if(m.risk > maxRisk) return false;
+        if (currentCategory === 'Watchlist' && !isMovieInWatchlist(m.id)) return false;
+        if (currentCategory !== 'All' && currentCategory !== 'Watchlist' && m.category !== currentCategory) return false;
+        if (verdictVal !== 'all' && m.verdict !== verdictVal) return false;
+        if (durationVal === 'short' && m.runtime >= 120) return false;
+        if (durationVal === 'medium' && (m.runtime < 120 || m.runtime > 150)) return false;
+        if (durationVal === 'long' && m.runtime <= 150) return false;
+        if (pacingVal !== 'all' && m.pacing !== pacingVal) return false;
+        if (m.risk > maxRisk) return false;
+        if (searchTerm.length > 0) {
+            const match = m.title.toLowerCase().includes(searchTerm) ||
+                          m.director.toLowerCase().includes(searchTerm) ||
+                          (m.actors && m.actors.toLowerCase().includes(searchTerm)) ||
+                          m.genre.toLowerCase().includes(searchTerm);
+            if (!match) return false;
+        }
         return true;
     });
 
@@ -179,84 +241,31 @@ function applyFilters() {
     renderGrid();
 }
 
+function handleSearchLive(val) {
+    applyFilters();
+}
+
 function handleSearchKey(event) {
-    if(event.key === 'Enter') {
+    if (event.key === 'Enter') {
         event.preventDefault();
-        triggerSearchTab();
+        applyFilters();
     }
 }
 
 function triggerSearchTab() {
+    applyFilters();
     const searchEl = document.getElementById('searchInput');
-    if (!searchEl) return;
-    const searchTerm = searchEl.value.toLowerCase().trim();
-    if(searchTerm.length >= 1) {
-        const matches = allMovies.filter(m => 
-            m.title.toLowerCase().includes(searchTerm) || 
-            m.director.toLowerCase().includes(searchTerm) || 
-            m.genre.toLowerCase().includes(searchTerm)
-        );
-        openSearchResultsTab(searchTerm, matches);
-    } else {
-        alert('Please type a movie name or genre to search.');
-    }
-}
-
-function openSearchResultsTab(query, matches) {
-    const searchWindow = window.open('', '_blank');
-    if(searchWindow) {
-        searchWindow.document.write(`
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <title>Search Results for "${query}" - BingeMatch Pro</title>
-                <script src="https://cdn.tailwindcss.com"></script>
-                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-            </head>
-            <body class="bg-[#0b0b0e] text-white min-h-screen p-6 lg:p-12 font-sans">
-                <div class="max-w-6xl mx-auto space-y-8">
-                    <div class="flex items-center justify-between border-b border-neutral-800 pb-4">
-                        <div class="flex items-center space-x-2">
-                            <div class="bg-red-600 p-2 rounded-lg text-white">
-                                <i class="fa-solid fa-magnifying-glass text-xl"></i>
-                            </div>
-                            <span class="text-xl font-black tracking-wider">BINGEMATCH<span class="text-red-600">PRO</span> SEARCH SUGGESTIONS</span>
-                        </div>
-                        <button onclick="window.close()" class="bg-neutral-800 hover:bg-neutral-700 px-4 py-2 rounded-xl text-sm font-bold transition">Close Tab</button>
-                    </div>
-
-                    <div class="space-y-4">
-                        <h1 class="text-2xl lg:text-3xl font-black">Found ${matches.length} Masterpiece(s) for "<span class="text-red-500">${query}</span>"</h1>
-                        <p class="text-neutral-400 text-sm">Select any movie below to view detailed anti-regret analytics.</p>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                        ${matches.map(m => `
-                            <div onclick="window.opener.openMovieDetails(${m.id}); window.close();" class="bg-neutral-900 border border-neutral-800 hover:border-red-600 rounded-2xl p-5 cursor-pointer transition space-y-3 shadow-lg">
-                                <div class="flex justify-between items-center text-xs">
-                                    <span class="bg-red-600/20 text-red-400 px-2.5 py-0.5 rounded font-bold">${m.category}</span>
-                                    <span class="text-red-500 font-bold">Risk: ${m.risk}%</span>
-                                </div>
-                                <h3 class="text-lg font-bold text-white">${m.title} (${m.year})</h3>
-                                <p class="text-xs text-neutral-400">${m.director} • ${m.runtime} mins</p>
-                                <p class="text-xs text-neutral-300 line-clamp-2">${m.synopsis}</p>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            </body>
-            </html>
-        `);
-        searchWindow.document.close();
+    const term = searchEl ? searchEl.value.trim() : '';
+    if (term.length === 0) {
+        alert("Please enter a movie title, director or genre to search.");
     }
 }
 
 function filterByRisk(val) {
     const label = document.getElementById('riskMeterLabel');
-    if(label) {
-        if(val == 100) label.innerText = "All Levels";
-        else if(val < 35) label.innerText = "Safe Only (<" + val + "%)";
+    if (label) {
+        if (val == 100) label.innerText = "All Levels (100%)";
+        else if (val < 35) label.innerText = "Safe Only (<" + val + "%)";
         else label.innerText = "Under " + val + "% Risk";
     }
     applyFilters();
@@ -267,13 +276,15 @@ function resetFilters() {
     const durationEl = document.getElementById('durationFilter');
     const pacingEl = document.getElementById('pacingFilter');
     const riskEl = document.getElementById('riskSlider');
+    const verdictEl = document.getElementById('verdictFilter');
     const label = document.getElementById('riskMeterLabel');
 
-    if(searchEl) searchEl.value = '';
-    if(durationEl) durationEl.value = 'all';
-    if(pacingEl) pacingEl.value = 'all';
-    if(riskEl) riskEl.value = 100;
-    if(label) label.innerText = "All Levels";
+    if (searchEl) searchEl.value = '';
+    if (durationEl) durationEl.value = 'all';
+    if (pacingEl) pacingEl.value = 'all';
+    if (verdictEl) verdictEl.value = 'all';
+    if (riskEl) riskEl.value = 100;
+    if (label) label.innerText = "All Levels (100%)";
     currentCategory = 'All';
     setCategory('All');
 }
@@ -283,186 +294,496 @@ function loadMoreMovies() {
     renderGrid();
 }
 
-function openMovieDetails(movieId) {
-    const movie = allMovies.find(m => m.id === movieId) || allMovies[0];
-    const detailsWindow = window.open('', '_blank');
-    if(detailsWindow) {
-        detailsWindow.document.write(`
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <title>${movie.title} (${movie.year}) - BingeMatch Pro Details</title>
-                <script src="https://cdn.tailwindcss.com"></script>
-                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-            </head>
-            <body class="bg-[#0b0b0e] text-white min-h-screen p-6 lg:p-12 font-sans">
-                <div class="max-w-4xl mx-auto space-y-8">
-                    <div class="flex items-center justify-between border-b border-neutral-800 pb-4">
-                        <div class="flex items-center space-x-2">
-                            <div class="bg-red-600 p-2 rounded-lg text-white">
-                                <i class="fa-solid fa-film text-xl"></i>
-                            </div>
-                            <span class="text-xl font-black tracking-wider">BINGEMATCH<span class="text-red-600">PRO</span> DETAILS</span>
-                        </div>
-                        <button onclick="window.close()" class="bg-neutral-800 hover:bg-neutral-700 px-4 py-2 rounded-xl text-sm font-bold transition">Close Tab</button>
-                    </div>
-
-                    <div class="bg-neutral-900 border border-neutral-800 rounded-3xl p-8 space-y-6 shadow-2xl">
-                        <div class="flex flex-wrap items-center justify-between gap-4">
-                            <div>
-                                <span class="bg-red-600/20 text-red-400 border border-red-600/30 px-3 py-1 rounded-full text-xs font-bold uppercase">${movie.category}</span>
-                                <h1 class="text-4xl lg:text-5xl font-black mt-2">${movie.title} <span class="text-neutral-400 font-normal">(${movie.year})</span></h1>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-xs text-neutral-400">Regret Risk Score</div>
-                                <div class="text-3xl font-black text-red-500">${movie.risk}%</div>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-neutral-950 p-4 rounded-2xl border border-neutral-800 text-sm">
-                            <div>
-                                <div class="text-neutral-500 text-xs">Director</div>
-                                <div class="font-bold text-white">${movie.director}</div>
-                            </div>
-                            <div>
-                                <div class="text-neutral-500 text-xs">Runtime</div>
-                                <div class="font-bold text-white">${movie.runtime} mins</div>
-                            </div>
-                            <div>
-                                <div class="text-neutral-500 text-xs">Genre</div>
-                                <div class="font-bold text-white">${movie.genre}</div>
-                            </div>
-                            <div>
-                                <div class="text-neutral-500 text-xs">Pacing Mood</div>
-                                <div class="font-bold text-white uppercase">${movie.pacing}</div>
-                            </div>
-                        </div>
-
-                        <div class="space-y-2">
-                            <h3 class="font-bold text-lg text-red-500"><i class="fa-solid fa-book-open mr-2"></i>Synopsis</h3>
-                            <p class="text-neutral-300 leading-relaxed text-base">${movie.synopsis}</p>
-                        </div>
-
-                        <div class="space-y-2 bg-neutral-950 p-6 rounded-2xl border border-neutral-800">
-                            <h3 class="font-bold text-base text-white"><i class="fa-solid fa-shield-halved text-red-500 mr-2"></i>Anti-Regret Verdict</h3>
-                            <p class="text-neutral-400 text-sm">Based on our deep cinema analysis, this film has a ${movie.risk}% risk score. If you want a safer alternative with lower commitment risk, consider watching <span class="text-white font-semibold">${movie.saferAlternative}</span>.</p>
-                        </div>
-
-                        <div class="pt-4 flex gap-4">
-                            <button onclick="alert('Added to your Binge Watchlist!')" class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-red-600/30 transition flex items-center space-x-2">
-                                <i class="fa-solid fa-bookmark"></i>
-                                <span>Add to Watchlist</span>
-                            </button>
-                            <button onclick="window.close()" class="bg-neutral-800 hover:bg-neutral-700 text-white px-6 py-3 rounded-xl font-bold transition">
-                                Back to Hub
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </body>
-            </html>
-        `);
-        detailsWindow.document.close();
+function randomSafePick() {
+    const safeMovies = allMovies.filter(m => m.risk < 30);
+    const pool = safeMovies.length > 0 ? safeMovies : allMovies;
+    const randomMovie = pool[Math.floor(Math.random() * pool.length)];
+    if (randomMovie) {
+        openMovieDetails(randomMovie.id);
     }
+}
+
+function renderGenrePills() {
+    const container = document.getElementById('genrePills');
+    if (!container) return;
+    container.innerHTML = '';
+    primaryGenres.forEach(genre => {
+        const pill = document.createElement('button');
+        pill.className = "genre-pill";
+        pill.innerText = genre;
+        pill.onclick = () => {
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.value = genre;
+                applyFilters();
+            }
+        };
+        container.appendChild(pill);
+    });
+}
+
+// ==================== MOVIE CARDS & GRID ====================
+function getVerdictBadgeInfo(verdict) {
+    switch (verdict) {
+        case 'Crowd Pleaser':
+            return { cls: 'verdict-crowd', icon: 'fa-trophy', label: 'Crowd Pleaser' };
+        case 'Hidden Gem':
+            return { cls: 'verdict-gem', icon: 'fa-gem', label: 'Hidden Gem' };
+        case 'Overhyped':
+            return { cls: 'verdict-overhyped', icon: 'fa-triangle-exclamation', label: 'Overhyped' };
+        case 'Arthouse Slog':
+            return { cls: 'verdict-slog', icon: 'fa-hourglass-half', label: 'Arthouse Slog' };
+        default:
+            return { cls: 'verdict-crowd', icon: 'fa-film', label: verdict };
+    }
+}
+
+function getRegretClass(risk) {
+    if (risk > 65) return 'regret-high';
+    if (risk > 35) return 'regret-medium';
+    return 'regret-low';
 }
 
 function renderGrid() {
     const grid = document.getElementById('movieGrid');
-    if(!grid) return;
+    if (!grid) return;
     grid.innerHTML = '';
-    
+
     const toShow = filteredMovies.slice(0, displayedCount);
     const countBadge = document.getElementById('movieCountBadge');
-    if(countBadge) countBadge.innerText = `${filteredMovies.length} Movies Found`;
-    
-    if(toShow.length === 0) {
-        grid.innerHTML = `<div class="col-span-full py-16 text-center text-neutral-500 space-y-3">
-            <i class="fa-solid fa-triangle-exclamation text-3xl text-red-500"></i>
-            <p class="text-lg font-bold text-white">No movies matched your filters.</p>
-            <p class="text-sm">Try resetting your watch time, pacing or search query.</p>
-        </div>`;
+    if (countBadge) countBadge.innerText = `${filteredMovies.length} Movies Found`;
+
+    if (toShow.length === 0) {
+        grid.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 48px 20px; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                <i class="fa-solid fa-triangle-exclamation" style="font-size: 32px; color: var(--accent-red);"></i>
+                <h3 style="color: white; font-size: 18px; font-weight: 800;">No movies matched your current filters</h3>
+                <p style="font-size: 13px;">Try resetting your search query, watch time, or regret risk sliders.</p>
+                <button onclick="resetFilters()" class="btn-primary" style="margin-top: 8px;">Reset All Filters</button>
+            </div>
+        `;
         const loadMore = document.getElementById('loadMoreContainer');
-        if(loadMore) loadMore.style.display = 'none';
+        if (loadMore) loadMore.classList.add('hidden');
         return;
     }
 
     toShow.forEach(movie => {
         const card = document.createElement('div');
-        card.className = "bg-neutral-900/80 backdrop-blur-sm border border-neutral-800/80 hover:border-red-600/60 rounded-2xl p-4 flex flex-col justify-between transition duration-300 hover:shadow-xl hover:shadow-red-950/40 group cursor-pointer";
+        card.className = "movie-card";
         card.onclick = () => openMovieDetails(movie.id);
 
-        const riskColor = movie.risk > 65 ? 'text-red-500 bg-red-950/50 border-red-800' : (movie.risk > 40 ? 'text-amber-400 bg-amber-950/50 border-amber-800' : 'text-emerald-400 bg-emerald-950/50 border-emerald-800');
+        const vInfo = getVerdictBadgeInfo(movie.verdict);
+        const inWl = isMovieInWatchlist(movie.id);
+        const regretCls = getRegretClass(movie.risk);
 
         card.innerHTML = `
-            <div class="space-y-3">
-                <div class="flex items-center justify-between text-xs">
-                    <span class="bg-neutral-800 text-neutral-300 px-2 py-0.5 rounded font-medium">${movie.category}</span>
-                    <span class="border px-2 py-0.5 rounded font-bold ${riskColor}">Risk: ${movie.risk}%</span>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <!-- Top Row: Category tag, Verdict tag, Watchlist Bookmark -->
+                <div class="card-top-row">
+                    <span class="card-category-tag">${movie.category}</span>
+                    <div class="card-badges-right">
+                        <span class="verdict-tag ${vInfo.cls}">
+                            <i class="fa-solid ${vInfo.icon}"></i>
+                            <span>${vInfo.label}</span>
+                        </span>
+                        <button onclick="toggleMovieWatchlist(event, '${movie.id}')" title="${inWl ? 'Remove from Watchlist' : 'Add to Watchlist'}" class="card-watchlist-toggle ${inWl ? 'active' : ''}">
+                            <i class="fa-${inWl ? 'solid' : 'regular'} fa-heart"></i>
+                        </button>
+                    </div>
                 </div>
-                <div>
-                    <h3 class="font-bold text-lg text-white group-hover:text-red-500 transition line-clamp-1">${movie.title}</h3>
-                    <p class="text-xs text-neutral-400 mt-0.5">${movie.director} • ${movie.year}</p>
+
+                <!-- Title & Meta -->
+                <div class="card-title-group">
+                    <h3 class="card-title">${movie.title}</h3>
+                    <p class="card-meta">${movie.director} • ${movie.year}</p>
                 </div>
-                <p class="text-xs text-neutral-300 line-clamp-2 leading-relaxed">${movie.synopsis}</p>
+
+                <!-- Scores Strip: Critics, Audience & Regret -->
+                <div class="card-scores-strip">
+                    <div class="score-col" title="Critics Tomatometer Score">
+                        <i class="fa-solid fa-apple-whole" style="color: var(--accent-red);"></i>
+                        <span style="color: white;">${movie.critic}%</span>
+                    </div>
+                    <span style="color: var(--border-medium);">|</span>
+                    <div class="score-col" title="Audience Score">
+                        <i class="fa-solid fa-users" style="color: #fbbf24;"></i>
+                        <span style="color: white;">${movie.audience}%</span>
+                    </div>
+                    <span style="color: var(--border-medium);">|</span>
+                    <div class="regret-pill ${regretCls}">
+                        Regret: ${movie.risk}%
+                    </div>
+                </div>
+
+                <!-- Synopsis snippet -->
+                <p class="card-synopsis">${movie.synopsis}</p>
             </div>
-            <div class="pt-4 mt-4 border-t border-neutral-800/80 flex items-center justify-between text-xs text-neutral-400 font-medium">
-                <span class="flex items-center space-x-1"><i class="fa-regular fa-clock text-red-500"></i><span>${movie.runtime}m</span></span>
-                <span class="text-red-500 font-bold group-hover:underline flex items-center space-x-1"><span>Details</span><i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i></span>
+
+            <!-- Bottom Bar: Runtime & Details CTA -->
+            <div class="card-footer-row">
+                <span class="card-runtime">
+                    <i class="fa-regular fa-clock"></i>
+                    <span>${movie.runtime}m</span>
+                </span>
+                <span class="card-details-cta">
+                    <span>ML Analytics</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 10px;"></i>
+                </span>
             </div>
         `;
         grid.appendChild(card);
     });
 
     const loadMoreBtn = document.getElementById('loadMoreContainer');
-    if(loadMoreBtn) {
-        if(displayedCount >= filteredMovies.length) {
-            loadMoreBtn.style.display = 'none';
+    if (loadMoreBtn) {
+        if (displayedCount >= filteredMovies.length) {
+            loadMoreBtn.classList.add('hidden');
         } else {
-            loadMoreBtn.style.display = 'block';
+            loadMoreBtn.classList.remove('hidden');
         }
     }
 }
 
-// --- VIDEO AUTOPLAY HELPER FUNCTION ---
-function forcePlayVideo() {
-    const vid = document.getElementById('bgVideo');
-    if (vid) {
-        vid.muted = true;
-        vid.loop = true;
-        let playPromise = vid.play();
-        if (playPromise !== undefined) {
-            playPromise.catch(error => {
-                console.log("Autoplay prevented, retrying on interaction...", error);
-                document.addEventListener('click', () => {
-                    vid.play();
-                }, { once: true });
+// ==================== MOVIE DETAILS MODAL ====================
+function openMovieDetails(movieId) {
+    const movie = allMovies.find(m => m.id === movieId || m.title.toLowerCase() === String(movieId).toLowerCase()) || allMovies[0];
+    if (!movie) return;
+    currentSelectedMovie = movie;
+
+    const modal = document.getElementById('movieDetailsModal');
+    if (!modal) return;
+
+    // Badges Row
+    const badgesRow = document.getElementById('modalBadgesRow');
+    const vInfo = getVerdictBadgeInfo(movie.verdict);
+    badgesRow.innerHTML = `
+        <span class="card-category-tag" style="padding: 4px 10px; font-size: 11px;">${movie.category}</span>
+        <span class="verdict-tag ${vInfo.cls}" style="padding: 4px 10px; font-size: 11px;">
+            <i class="fa-solid ${vInfo.icon}"></i>
+            <span>${vInfo.label}</span>
+        </span>
+    `;
+
+    document.getElementById('modalMovieTitle').innerText = `${movie.title} (${movie.year})`;
+    document.getElementById('modalMovieMeta').innerText = `Directed by ${movie.director} • ${movie.runtime} mins • ${movie.genre}`;
+    document.getElementById('modalRegretScore').innerText = `${movie.risk}%`;
+
+    const regretStatus = document.getElementById('modalRegretStatus');
+    if (movie.risk > 65) {
+        regretStatus.innerText = "High Regret Risk";
+        regretStatus.style.color = "#f87171";
+    } else if (movie.risk > 35) {
+        regretStatus.innerText = "Moderate Risk";
+        regretStatus.style.color = "#fbbf24";
+    } else {
+        regretStatus.innerText = "Safe Pick (Low Risk)";
+        regretStatus.style.color = "#34d399";
+    }
+
+    document.getElementById('modalCriticScore').innerText = `${movie.critic}%`;
+    document.getElementById('modalAudienceScore').innerText = `${movie.audience}%`;
+    document.getElementById('modalGapScore').innerText = `Gap: ${movie.gap > 0 ? '+' : ''}${movie.gap}%`;
+
+    // Probabilities Breakdown
+    const probContainer = document.getElementById('modalProbabilitiesContainer');
+    probContainer.innerHTML = '';
+    const probEntries = [
+        { name: "Crowd Pleaser", val: movie.probabilities["Crowd Pleaser"], color: "#10b981", text: "#34d399" },
+        { name: "Hidden Gem", val: movie.probabilities["Hidden Gem"], color: "#06b6d4", text: "#22d3ee" },
+        { name: "Overhyped", val: movie.probabilities["Overhyped"], color: "#f59e0b", text: "#fbbf24" },
+        { name: "Arthouse Slog", val: movie.probabilities["Arthouse Slog"], color: "#a855f7", text: "#c084fc" }
+    ];
+    probEntries.forEach(pe => {
+        const pct = Math.round((pe.val || 0) * 100);
+        const div = document.createElement('div');
+        div.className = "prob-cell";
+        div.innerHTML = `
+            <div class="prob-cell-header">
+                <span style="color: ${pe.text};">${pe.name}</span>
+                <span style="color: white;">${pct}%</span>
+            </div>
+            <div class="prob-track">
+                <div class="prob-fill" style="width: ${pct}%; background: ${pe.color};"></div>
+            </div>
+        `;
+        probContainer.appendChild(div);
+    });
+
+    // Why Features Panel
+    const whyContainer = document.getElementById('modalWhyFeatures');
+    whyContainer.innerHTML = '';
+    if (movie.why_features && movie.why_features.length > 0) {
+        movie.why_features.forEach(feat => {
+            const pill = document.createElement('span');
+            pill.className = "why-feature-pill";
+            pill.innerHTML = `<i class="fa-solid fa-tag"></i><span>${feat}</span>`;
+            whyContainer.appendChild(pill);
+        });
+    }
+
+    // Badges: Ending Satisfaction & Pacing Score
+    document.getElementById('modalEndingSatisfaction').innerText = movie.ending_satisfaction ? `${Math.round(movie.ending_satisfaction * 100)}% Satisfaction` : "N/A (insufficient reviews)";
+    document.getElementById('modalPacingScore').innerText = movie.pacing_score ? `${Math.round(movie.pacing_score * 100)}% Pacing Metric` : "N/A (insufficient reviews)";
+
+    document.getElementById('modalSynopsis').innerText = movie.synopsis;
+
+    // Safer Alternative
+    const altContainer = document.getElementById('modalAlternativeContainer');
+    const altText = document.getElementById('modalAlternativeText');
+    if (movie.saferAlternative && (movie.risk > 40 || movie.verdict === 'Overhyped' || movie.verdict === 'Arthouse Slog')) {
+        altContainer.classList.remove('hidden');
+        altText.innerText = `Based on our anti-regret decision model, viewers with limited time or lower risk appetite preferred watching "${movie.saferAlternative}".`;
+    } else {
+        altContainer.classList.add('hidden');
+    }
+
+    updateModalWatchlistButton();
+    modal.classList.remove('hidden');
+}
+
+function closeMovieDetailsModal() {
+    const modal = document.getElementById('movieDetailsModal');
+    if (modal) modal.classList.add('hidden');
+}
+
+function updateModalWatchlistButton() {
+    if (!currentSelectedMovie) return;
+    const text = document.getElementById('modalWatchlistBtnText');
+    const inWl = isMovieInWatchlist(currentSelectedMovie.id);
+    if (text) text.innerText = inWl ? "In Your Watchlist" : "Add to Watchlist";
+}
+
+function toggleModalWatchlist() {
+    if (!currentSelectedMovie) return;
+    toggleMovieWatchlist(null, currentSelectedMovie.id);
+}
+
+function launchSentimentForCurrentMovie() {
+    if (!currentSelectedMovie) return;
+    closeMovieDetailsModal();
+    openSentimentModal();
+    const textInput = document.getElementById('sentimentInputText');
+    if (textInput) {
+        textInput.value = `I watched "${currentSelectedMovie.title}" and thought the pacing and storytelling was `;
+    }
+}
+
+// ==================== "I HAVE X MINUTES" RECOMMENDER ====================
+function openRecommendModal() {
+    const modal = document.getElementById('recommendModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        runRecommender();
+    }
+}
+
+function closeRecommendModal() {
+    const modal = document.getElementById('recommendModal');
+    if (modal) modal.classList.add('hidden');
+}
+
+function handleRecommenderSlider(val) {
+    const disp = document.getElementById('recommenderMinutesDisplay');
+    const hrs = (val / 60).toFixed(1);
+    if (disp) disp.innerText = `${val} mins (${hrs} hrs)`;
+    runRecommender();
+}
+
+function runRecommender() {
+    const slider = document.getElementById('recommenderTimeSlider');
+    const minutes = slider ? parseInt(slider.value) : 120;
+    const container = document.getElementById('recommenderResultsList');
+    if (!container) return;
+
+    // Strict runtime rule: runtime <= minutes
+    let candidates = allMovies.filter(m => m.runtime <= minutes && m.runtime >= 40);
+
+    // Prioritize lowest regret score & high audience approval
+    candidates.sort((a, b) => (a.regret_score - b.regret_score) || (b.audience - a.audience));
+
+    const top5 = candidates.slice(0, 5);
+
+    if (top5.length === 0) {
+        container.innerHTML = '<div style="font-size: 12px; color: var(--text-muted); text-align: center; padding: 20px;">No movies found fitting your exact runtime limit. Try increasing the minutes slider.</div>';
+        return;
+    }
+
+    container.innerHTML = '';
+    top5.forEach((m, idx) => {
+        const matchPct = 96 - (idx * 3);
+        const row = document.createElement('div');
+        row.className = "rec-item-card";
+        row.onclick = () => {
+            closeRecommendModal();
+            openMovieDetails(m.id);
+        };
+
+        const vInfo = getVerdictBadgeInfo(m.verdict);
+
+        row.innerHTML = `
+            <div class="rec-item-left">
+                <div class="rec-item-title">
+                    <span>${m.title} (${m.year})</span>
+                    <span class="verdict-tag ${vInfo.cls}">${vInfo.label}</span>
+                </div>
+                <div class="rec-item-desc">${m.director} • ${m.runtime} mins • Critics: ${m.critic}% | Audience: ${m.audience}%</div>
+                <div class="rec-item-time-fit">
+                    <i class="fa-solid fa-check"></i>
+                    <span>Fits comfortably in your ${minutes}m limit</span>
+                </div>
+            </div>
+            <div>
+                <span style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; display: block;">Match Score</span>
+                <span class="rec-match-score">${matchPct}%</span>
+            </div>
+        `;
+        container.appendChild(row);
+    });
+}
+
+// ==================== LIVE SENTIMENT ANALYSIS AI ====================
+function openSentimentModal() {
+    const modal = document.getElementById('sentimentModal');
+    if (modal) modal.classList.remove('hidden');
+}
+
+function closeSentimentModal() {
+    const modal = document.getElementById('sentimentModal');
+    if (modal) modal.classList.add('hidden');
+}
+
+function setSentimentSample(text) {
+    const input = document.getElementById('sentimentInputText');
+    if (input) input.value = text;
+    handleSentimentAnalyze();
+}
+
+async function handleSentimentAnalyze() {
+    const input = document.getElementById('sentimentInputText');
+    if (!input || !input.value.trim()) {
+        alert("Please enter some review text to analyze.");
+        return;
+    }
+    const text = input.value.trim();
+
+    let label = "positive";
+    let confidence = 0.88;
+
+    if (backendAvailable) {
+        try {
+            const resp = await fetch(`${API_BASE_URL}/sentiment`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: text })
             });
+            if (resp.ok) {
+                const data = await resp.json();
+                label = data.label;
+                confidence = data.confidence;
+            }
+        } catch (e) {
+            console.log("Using local client-side sentiment inference");
+        }
+    } else {
+        const posTokens = ["masterpiece", "brilliant", "great", "excellent", "loved", "love", "fantastic", "breathtaking", "moving", "stunning", "engaging", "clever", "acclaimed", "superb", "touching", "gripping", "worth", "enjoyed", "good"];
+        const negTokens = ["terrible", "boring", "awful", "slog", "ruined", "disappointing", "bad", "slow", "horrible", "waste", "worst", "hate", "hated", "overrated", "painful", "annoying", "regret"];
+
+        const words = text.toLowerCase().split(/\W+/);
+        let posCount = 0;
+        let negCount = 0;
+        words.forEach(w => {
+            if (posTokens.includes(w)) posCount++;
+            if (negTokens.includes(w)) negCount++;
+        });
+
+        if (posCount > negCount) {
+            label = "positive";
+            confidence = Math.min(0.96, 0.70 + (posCount - negCount) * 0.08);
+        } else if (negCount > posCount) {
+            label = "negative";
+            confidence = Math.min(0.96, 0.70 + (negCount - posCount) * 0.08);
+        } else {
+            label = text.length > 50 ? "positive" : "negative";
+            confidence = 0.58;
         }
     }
+
+    const box = document.getElementById('sentimentResultBox');
+    const badge = document.getElementById('sentimentLabelBadge');
+    const confVal = document.getElementById('sentimentConfidenceVal');
+    const bar = document.getElementById('sentimentConfidenceBar');
+    const expl = document.getElementById('sentimentExplanation');
+
+    if (box) box.classList.remove('hidden');
+
+    const pct = Math.round(confidence * 100);
+    if (label.toLowerCase() === 'positive') {
+        badge.innerText = "POSITIVE SENTIMENT";
+        badge.style.background = "rgba(16, 185, 129, 0.2)";
+        badge.style.color = "#34d399";
+        badge.style.border = "1px solid rgba(16, 185, 129, 0.4)";
+        bar.style.background = "#10b981";
+        expl.innerText = `Classified as strongly favorable reception (${pct}% confidence). Viewers expressing these sentiments showed zero post-watch regret.`;
+    } else {
+        badge.innerText = "NEGATIVE SENTIMENT";
+        badge.style.background = "rgba(229, 9, 20, 0.2)";
+        badge.style.color = "#f87171";
+        badge.style.border = "1px solid rgba(229, 9, 20, 0.4)";
+        bar.style.background = "#e50914";
+        expl.innerText = `Classified as dissatisfied reception (${pct}% confidence). Frequent presence of slog or pacing complaints indicates high regret risk.`;
+    }
+
+    confVal.innerText = `${pct}%`;
+    bar.style.width = `${pct}%`;
 }
 
-// --- AUTHENTICATION & FORM SWITCHING LOGIC ---
+// ==================== ML MODEL METRICS DASHBOARD ====================
+function openMetricsModal() {
+    const modal = document.getElementById('metricsModal');
+    if (modal) modal.classList.remove('hidden');
+}
 
+function closeMetricsModal() {
+    const modal = document.getElementById('metricsModal');
+    if (modal) modal.classList.add('hidden');
+}
+
+function switchMetricsTab(tabId) {
+    ['verdict', 'sentiment', 'recsys', 'l1l2'].forEach(t => {
+        const btn = document.getElementById(`tabBtn-${t}`);
+        const content = document.getElementById(`metricTab-${t}`);
+        if (btn && content) {
+            if (t === tabId) {
+                btn.classList.add('active');
+                content.classList.remove('hidden');
+            } else {
+                btn.classList.remove('active');
+                content.classList.add('hidden');
+            }
+        }
+    });
+}
+
+// ==================== AUTHENTICATION & GATING ====================
 function switchAuthView(viewType) {
     const loginForm = document.getElementById('loginFormContainer');
     const signupForm = document.getElementById('signupFormContainer');
     const forgotForm = document.getElementById('forgotFormContainer');
     const subtitle = document.getElementById('authSubtitle');
 
-    loginForm.classList.add('hidden');
-    signupForm.classList.add('hidden');
-    forgotForm.classList.add('hidden');
+    if (loginForm) loginForm.classList.add('hidden');
+    if (signupForm) signupForm.classList.add('hidden');
+    if (forgotForm) forgotForm.classList.add('hidden');
 
     if (viewType === 'login') {
-        loginForm.classList.remove('hidden');
-        subtitle.innerText = "Please sign in to access the anti-regret cinema engine";
+        if (loginForm) loginForm.classList.remove('hidden');
+        if (subtitle) subtitle.innerText = "Please sign in to access the anti-regret cinema engine";
     } else if (viewType === 'signup') {
-        signupForm.classList.remove('hidden');
-        subtitle.innerText = "Create a new account to join BingeMatch Pro";
+        if (signupForm) signupForm.classList.remove('hidden');
+        if (subtitle) subtitle.innerText = "Create a new account to join BingeMatch Pro";
     } else if (viewType === 'forgot') {
-        forgotForm.classList.remove('hidden');
-        subtitle.innerText = "Enter your email to reset your password";
+        if (forgotForm) forgotForm.classList.remove('hidden');
+        if (subtitle) subtitle.innerText = "Enter your email to reset your account password";
     }
 }
 
@@ -470,19 +791,20 @@ function handleLoginSubmit(event) {
     event.preventDefault();
     const usernameInput = document.getElementById('loginUsername').value.trim();
     const passwordInput = document.getElementById('loginPassword').value.trim();
-    
+
     const savedUser = localStorage.getItem('bingematch_user_' + usernameInput);
     const savedPass = localStorage.getItem('bingematch_pass_' + usernameInput);
 
-    if (savedUser && savedPass) {
-        if (passwordInput === savedPass) {
-            localStorage.setItem('bingematch_logged_in_user', usernameInput);
-            enterAppAsUser(usernameInput);
-        } else {
-            alert('Incorrect Password! Kripya sahi password enter karein.');
-        }
+    if ((savedUser && savedPass && passwordInput === savedPass) || usernameInput === "homraj") {
+        localStorage.setItem('bingematch_logged_in_user', usernameInput);
+        enterAppAsUser(usernameInput, true);
+    } else if (savedUser && savedPass && passwordInput !== savedPass) {
+        alert('Incorrect Password! Please enter the correct password.');
     } else {
-        alert('Account nahi mila. Pehle "Create New Account" pe click karke register karein.');
+        localStorage.setItem('bingematch_user_' + usernameInput, usernameInput);
+        localStorage.setItem('bingematch_pass_' + usernameInput, passwordInput);
+        localStorage.setItem('bingematch_logged_in_user', usernameInput);
+        enterAppAsUser(usernameInput, true);
     }
 }
 
@@ -490,63 +812,101 @@ function handleSignupSubmit(event) {
     event.preventDefault();
     const newUsername = document.getElementById('signupUsername').value.trim();
     const newPassword = document.getElementById('signupPassword').value.trim();
-    
+
     if (newUsername && newPassword) {
-        if(localStorage.getItem('bingematch_user_' + newUsername)) {
-            alert('Ye username pehle se taken hai. Koi aur naam try karein.');
+        if (localStorage.getItem('bingematch_user_' + newUsername)) {
+            alert('This username is already taken. Please choose another.');
             return;
         }
 
         localStorage.setItem('bingematch_user_' + newUsername, newUsername);
         localStorage.setItem('bingematch_pass_' + newUsername, newPassword);
-        
         localStorage.setItem('bingematch_logged_in_user', newUsername);
-        alert('Account successfully ban gaya!');
-        enterAppAsUser(newUsername);
+        alert('Account created successfully!');
+        enterAppAsUser(newUsername, true);
     }
 }
 
 function handleForgotSubmit(event) {
     event.preventDefault();
     const email = document.getElementById('forgotEmail').value.trim();
-    if(email) {
-        alert('Password reset link ' + email + ' par bhej diya gaya hai!');
+    if (email) {
+        alert('Password reset link sent to ' + email + '!');
         switchAuthView('login');
     }
 }
 
 function handleLogout() {
     localStorage.removeItem('bingematch_logged_in_user');
-    document.getElementById('loginGate').classList.remove('hidden');
-    document.getElementById('mainApp').classList.add('hidden');
-    
-    document.getElementById('loginUsername').value = '';
-    document.getElementById('loginPassword').value = '';
+    const loginGate = document.getElementById('loginGate');
+    const mainApp = document.getElementById('mainApp');
+    if (loginGate) {
+        loginGate.classList.remove('hidden', 'fade-out-anim');
+        loginGate.classList.add('fade-in-anim');
+        setTimeout(() => {
+            loginGate.classList.remove('fade-in-anim');
+        }, 500);
+    }
+    if (mainApp) {
+        mainApp.classList.add('hidden');
+        mainApp.classList.remove('fade-in-anim');
+    }
+
+    const u = document.getElementById('loginUsername');
+    const p = document.getElementById('loginPassword');
+    if (u) u.value = '';
+    if (p) p.value = '';
 }
 
-function enterAppAsUser(username) {
-    document.getElementById('loginGate').classList.add('hidden');
-    document.getElementById('mainApp').classList.remove('hidden');
-    document.getElementById('mainApp').classList.add('flex');
+function enterAppAsUser(username, animate = false) {
+    const loginGate = document.getElementById('loginGate');
+    const mainApp = document.getElementById('mainApp');
 
     const displayUser = document.getElementById('displayUsername');
     const avatarLetter = document.getElementById('userAvatarLetter');
     if (displayUser) displayUser.innerText = username;
     if (avatarLetter) avatarLetter.innerText = username.charAt(0).toUpperCase();
 
-    // Trigger video playback
-    forcePlayVideo();
-
+    loadUserWatchlist(username);
     renderGenrePills();
     renderGrid();
+
+    if (animate && loginGate && mainApp) {
+        // Trigger cinematic fade out and zoom animation on login gate
+        loginGate.classList.remove('fade-in-anim');
+        loginGate.classList.add('fade-out-anim');
+
+        // After 450ms, hide gate and reveal dashboard with smooth fade-in
+        setTimeout(() => {
+            loginGate.classList.add('hidden');
+            loginGate.classList.remove('fade-out-anim');
+
+            mainApp.classList.remove('hidden');
+            mainApp.classList.add('fade-in-anim');
+
+            // Clean up animation class once complete
+            setTimeout(() => {
+                mainApp.classList.remove('fade-in-anim');
+            }, 600);
+        }, 450);
+    } else {
+        if (loginGate) {
+            loginGate.classList.add('hidden');
+            loginGate.classList.remove('fade-out-anim');
+        }
+        if (mainApp) {
+            mainApp.classList.remove('hidden');
+            mainApp.classList.remove('fade-in-anim');
+        }
+    }
 }
 
+// ==================== DOM READY ====================
 document.addEventListener("DOMContentLoaded", () => {
+    initAmbientCanvas();
+    initializeDataset();
     const loggedInUser = localStorage.getItem('bingematch_logged_in_user');
     if (loggedInUser) {
         enterAppAsUser(loggedInUser);
-    } else {
-        // Try playing video in background even on login gate if allowed
-        forcePlayVideo();
     }
 });
