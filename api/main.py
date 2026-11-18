@@ -67,6 +67,8 @@ def init_movies():
                         "id": link,
                         "title": row.get("movie_title", ""),
                         "year": row.get("year", ""),
+                        "director": row.get("directors", "") or "Filmmakers",
+                        "actors": row.get("actors", "") or "Ensemble Cast",
                         "runtime": rt,
                         "genres": [g.strip() for g in row.get("genres", "").split(",") if g.strip()],
                         "critic": crit,
@@ -255,19 +257,47 @@ def recommend(
             df_recs = ML_RECSYS(minutes=minutes, liked_links=liked_links, gender=gender, age_group=age_group, k=5)
             recs = []
             for _, r in df_recs.iterrows():
+                link = str(r["rotten_tomatoes_link"])
+                lookup = MOVIES_LOOKUP.get(link, {})
+                
+                # Safe year parse
+                parsed_year = None
+                try:
+                    if r.get("year") is not None and str(r.get("year")).strip():
+                        parsed_year = int(float(r["year"]))
+                    elif lookup.get("year"):
+                        parsed_year = int(float(lookup["year"]))
+                except Exception:
+                    parsed_year = 2015
+
                 recs.append({
-                    "id": str(r["rotten_tomatoes_link"]),
-                    "title": str(r["movie_title"]),
-                    "year": int(r["year"]) if r["year"] else None,
-                    "runtime": float(r["runtime"]),
-                    "genres": [g.strip() for g in str(r.get("genres", "")).split(",") if g.strip()],
-                    "critic": float(r.get("critic") or 0),
-                    "audience": float(r.get("audience") or 0),
-                    "verdict": str(r.get("verdict") or "Crowd Pleaser"),
+                    "id": link,
+                    "title": str(r.get("movie_title") or lookup.get("title") or "Untitled"),
+                    "year": parsed_year,
+                    "runtime": float(r.get("runtime") or lookup.get("runtime") or 120),
+                    "genres": [g.strip() for g in str(r.get("genres", "") or ",".join(lookup.get("genres", []))).split(",") if g.strip()],
+                    "director": lookup.get("director", "Filmmakers"),
+                    "actors": lookup.get("actors", "Ensemble Cast"),
+                    "critic": float(lookup.get("critic") or r.get("critic") or 0),
+                    "audience": float(lookup.get("audience") or r.get("audience") or 0),
+                    "verdict": str(lookup.get("verdict") or r.get("verdict") or "Crowd Pleaser"),
+                    "predicted_verdict": str(lookup.get("verdict") or r.get("verdict") or "Crowd Pleaser"),
+                    "regret_score": int(lookup.get("regret_score", 25)),
+                    "gap": float(lookup.get("gap") or 0),
+                    "probabilities": lookup.get("probabilities", {
+                        "Crowd Pleaser": 0.7,
+                        "Hidden Gem": 0.1,
+                        "Overhyped": 0.1,
+                        "Arthouse Slog": 0.1
+                    }),
+                    "ending_satisfaction": lookup.get("ending_satisfaction"),
+                    "pacing_score": lookup.get("pacing_score"),
+                    "why_features": lookup.get("why_features", []),
                     "match_score": float(r.get("match_score") or 0.85),
                     "reason": str(r.get("reason") or "Anti-Regret match for your time")
                 })
-            return recs
+            if recs:
+                return recs
         except Exception as e:
             print("Recsys execution exception:", e)
 

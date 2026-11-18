@@ -13,7 +13,7 @@ let currentVerdictFilter = 'all';
 let currentSelectedMovie = null;
 let userWatchlist = [];
 let backendAvailable = false;
-const API_BASE_URL = 'http://127.0.0.1:8000';
+const API_BASE_URL = (window.location.protocol === 'file:' || window.location.port === '5500') ? 'http://127.0.0.1:8000' : window.location.origin;
 
 // Curated Top Genres
 const primaryGenres = [
@@ -138,7 +138,7 @@ async function checkBackendHealth() {
 }
 
 // ==================== WATCHLIST MANAGEMENT ====================
-function loadUserWatchlist(username) {
+async function loadUserWatchlist(username) {
     if (!username) return;
     try {
         const saved = localStorage.getItem('bingematch_watchlist_' + username);
@@ -146,15 +146,42 @@ function loadUserWatchlist(username) {
     } catch (e) {
         userWatchlist = [];
     }
+
+    if (backendAvailable) {
+        try {
+            const token = localStorage.getItem('bingematch_token');
+            const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+            const resp = await fetch(`${API_BASE_URL}/watchlist`, { headers });
+            if (resp.ok) {
+                const data = await resp.json();
+                if (Array.isArray(data) && data.length > 0) {
+                    userWatchlist = Array.from(new Set([...userWatchlist, ...data]));
+                }
+            }
+        } catch (e) {
+            console.warn("Backend watchlist load error:", e);
+        }
+    }
     updateWatchlistBadge();
 }
 
-function saveUserWatchlist() {
+async function saveUserWatchlist(toggledId, isAdd) {
     const user = localStorage.getItem('bingematch_logged_in_user');
     if (user) {
         localStorage.setItem('bingematch_watchlist_' + user, JSON.stringify(userWatchlist));
     }
     updateWatchlistBadge();
+
+    if (backendAvailable && toggledId) {
+        try {
+            const token = localStorage.getItem('bingematch_token');
+            const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+            const method = isAdd ? 'POST' : 'DELETE';
+            await fetch(`${API_BASE_URL}/watchlist/${encodeURIComponent(toggledId)}`, { method, headers });
+        } catch (e) {
+            console.warn("Backend watchlist sync error:", e);
+        }
+    }
 }
 
 function updateWatchlistBadge() {
@@ -170,12 +197,15 @@ function isMovieInWatchlist(movieId) {
 
 function toggleMovieWatchlist(event, movieId) {
     if (event) event.stopPropagation();
+    let isAdd = false;
     if (isMovieInWatchlist(movieId)) {
         userWatchlist = userWatchlist.filter(id => id !== movieId);
+        isAdd = false;
     } else {
         userWatchlist.push(movieId);
+        isAdd = true;
     }
-    saveUserWatchlist();
+    saveUserWatchlist(movieId, isAdd);
     renderGrid();
     if (currentSelectedMovie && currentSelectedMovie.id === movieId) {
         updateModalWatchlistButton();
@@ -582,26 +612,46 @@ function closeRecommendModal() {
     if (modal) modal.classList.add('hidden');
 }
 
+let recommenderDebounceTimer = null;
 function handleRecommenderSlider(val) {
     const disp = document.getElementById('recommenderMinutesDisplay');
     const hrs = (val / 60).toFixed(1);
     if (disp) disp.innerText = `${val} mins (${hrs} hrs)`;
-    runRecommender();
+    clearTimeout(recommenderDebounceTimer);
+    recommenderDebounceTimer = setTimeout(() => {
+        runRecommender();
+    }, 250);
 }
 
-function runRecommender() {
+async function runRecommender() {
     const slider = document.getElementById('recommenderTimeSlider');
     const minutes = slider ? parseInt(slider.value) : 120;
     const container = document.getElementById('recommenderResultsList');
     if (!container) return;
 
-    // Strict runtime rule: runtime <= minutes
-    let candidates = allMovies.filter(m => m.runtime <= minutes && m.runtime >= 40);
+    let top5 = [];
+    if (backendAvailable) {
+        try {
+            const token = localStorage.getItem('bingematch_token');
+            const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+            const res = await fetch(`${API_BASE_URL}/recommend?minutes=${minutes}`, { headers });
+            if (res.ok) {
+                const data = await res.json();
+                if (Array.isArray(data) && data.length > 0) {
+                    top5 = data;
+                }
+            }
+        } catch (e) {
+            console.warn("Backend recommend fetch error, using client fallback:", e);
+        }
+    }
 
-    // Prioritize lowest regret score & high audience approval
-    candidates.sort((a, b) => (a.regret_score - b.regret_score) || (b.audience - a.audience));
-
-    const top5 = candidates.slice(0, 5);
+    if (!top5.length) {
+        // Strict runtime rule: runtime <= minutes
+        let candidates = allMovies.filter(m => m.runtime <= minutes && m.runtime >= 40);
+        candidates.sort((a, b) => (a.regret_score - b.regret_score) || (b.audience - a.audience));
+        top5 = candidates.slice(0, 5);
+    }
 
     if (top5.length === 0) {
         container.innerHTML = '<div style="font-size: 12px; color: var(--text-muted); text-align: center; padding: 20px;">No movies found fitting your exact runtime limit. Try increasing the minutes slider.</div>';
@@ -610,7 +660,7 @@ function runRecommender() {
 
     container.innerHTML = '';
     top5.forEach((m, idx) => {
-        const matchPct = 96 - (idx * 3);
+        const matchPct = m.match_score ? Math.round(m.match_score * 100) : (96 - (idx * 3));
         const row = document.createElement('div');
         row.className = "rec-item-card";
         row.onclick = () => {
@@ -623,13 +673,13 @@ function runRecommender() {
         row.innerHTML = `
             <div class="rec-item-left">
                 <div class="rec-item-title">
-                    <span>${m.title} (${m.year})</span>
+                    <span>${m.title} (${m.year || ''})</span>
                     <span class="verdict-tag ${vInfo.cls}">${vInfo.label}</span>
                 </div>
-                <div class="rec-item-desc">${m.director} • ${m.runtime} mins • Critics: ${m.critic}% | Audience: ${m.audience}%</div>
+                <div class="rec-item-desc">${m.director || 'Filmmakers'} • ${m.runtime} mins • Critics: ${m.critic}% | Audience: ${m.audience}%</div>
                 <div class="rec-item-time-fit">
                     <i class="fa-solid fa-check"></i>
-                    <span>Fits comfortably in your ${minutes}m limit</span>
+                    <span>${m.reason || `Fits comfortably in your ${minutes}m limit`}</span>
                 </div>
             </div>
             <div>
@@ -787,10 +837,46 @@ function switchAuthView(viewType) {
     }
 }
 
-function handleLoginSubmit(event) {
+async function handleLoginSubmit(event) {
     event.preventDefault();
     const usernameInput = document.getElementById('loginUsername').value.trim();
     const passwordInput = document.getElementById('loginPassword').value.trim();
+
+    if (backendAvailable) {
+        try {
+            const resp = await fetch(`${API_BASE_URL}/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: usernameInput, password: passwordInput })
+            });
+            if (resp.ok) {
+                const data = await resp.json();
+                if (data.access_token) {
+                    localStorage.setItem('bingematch_token', data.access_token);
+                }
+            } else if (resp.status === 401) {
+                // If user doesn't exist yet, auto-register on backend
+                const regResp = await fetch(`${API_BASE_URL}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: usernameInput, email: `${usernameInput}@bingematch.com`, password: passwordInput })
+                });
+                if (regResp.ok) {
+                    const lResp = await fetch(`${API_BASE_URL}/auth/login`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username: usernameInput, password: passwordInput })
+                    });
+                    if (lResp.ok) {
+                        const lData = await lResp.json();
+                        if (lData.access_token) localStorage.setItem('bingematch_token', lData.access_token);
+                    }
+                }
+            }
+        } catch (e) {
+            console.warn("Backend auth failed, continuing in client mode:", e);
+        }
+    }
 
     const savedUser = localStorage.getItem('bingematch_user_' + usernameInput);
     const savedPass = localStorage.getItem('bingematch_pass_' + usernameInput);
@@ -808,12 +894,35 @@ function handleLoginSubmit(event) {
     }
 }
 
-function handleSignupSubmit(event) {
+async function handleSignupSubmit(event) {
     event.preventDefault();
     const newUsername = document.getElementById('signupUsername').value.trim();
     const newPassword = document.getElementById('signupPassword').value.trim();
 
     if (newUsername && newPassword) {
+        if (backendAvailable) {
+            try {
+                const resp = await fetch(`${API_BASE_URL}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: newUsername, email: `${newUsername}@bingematch.com`, password: newPassword })
+                });
+                if (resp.ok) {
+                    const lResp = await fetch(`${API_BASE_URL}/auth/login`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username: newUsername, password: newPassword })
+                    });
+                    if (lResp.ok) {
+                        const lData = await lResp.json();
+                        if (lData.access_token) localStorage.setItem('bingematch_token', lData.access_token);
+                    }
+                }
+            } catch (e) {
+                console.warn("Backend registration exception:", e);
+            }
+        }
+
         if (localStorage.getItem('bingematch_user_' + newUsername)) {
             alert('This username is already taken. Please choose another.');
             return;
