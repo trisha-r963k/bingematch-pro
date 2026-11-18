@@ -54,6 +54,11 @@
                     <span>Login & Enter Hub</span>
                 </button>
 
+                <div class="auth-admin-hint">
+                    <i class="fa-solid fa-shield-halved" style="color: #f59e0b;"></i>
+                    <span>Default Admin: <strong>admin</strong> / <strong>admin</strong></span>
+                </div>
+
                 <p class="auth-footer">
                     Don't have an account? <button type="button" onclick="switchAuthView('signup')" class="btn-link">Create Account</button>
                 </p>
@@ -165,6 +170,12 @@
                     <span>Metrics</span>
                 </button>
 
+                <!-- Admin Settings Trigger (Admin Only) -->
+                <button id="adminNavBtn" onclick="openAdminModal()" class="action-pill-btn btn-admin hidden" title="Admin Settings & Management">
+                    <i class="fa-solid fa-screwdriver-wrench" style="color: #f59e0b;"></i>
+                    <span>Admin Settings</span>
+                </button>
+
                 <!-- Engine Live Status -->
                 <div class="engine-status-pill">
                     <span class="status-pulse-dot"></span>
@@ -175,6 +186,7 @@
                 <div class="user-profile-badge">
                     <div id="userAvatarLetter" class="user-avatar-circle">H</div>
                     <span id="displayUsername" class="user-name-text">homraj</span>
+                    <span id="adminRoleBadge" class="admin-role-badge hidden"><i class="fa-solid fa-shield-halved"></i> ADMIN</span>
                 </div>
 
                 <!-- Logout Button -->
@@ -452,6 +464,10 @@
                         <i class="fa-solid fa-comment-dots" style="color: var(--accent-red);"></i>
                         <span>Test Review Sentiment</span>
                     </button>
+                    <button id="modalAdminDeleteBtn" onclick="deleteCurrentMovieFromModal()" class="btn-secondary hidden" style="border-color: #ef4444; color: #f87171;">
+                        <i class="fa-solid fa-trash"></i>
+                        <span>Admin: Delete</span>
+                    </button>
                 </div>
                 <button onclick="closeMovieDetailsModal()" class="btn-primary">Close Details</button>
             </div>
@@ -708,6 +724,304 @@
 
             <div style="text-align: right; padding-top: 10px;">
                 <button onclick="closeMetricsModal()" class="btn-secondary">Close Dashboard</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. ADMIN SETTINGS & MANAGEMENT MODAL -->
+    <div id="adminModal" class="modal-overlay hidden">
+        <div class="modal-box modal-box-admin">
+            <button onclick="closeAdminModal()" class="modal-close-btn" title="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Header -->
+            <div class="admin-header">
+                <div class="admin-header-title">
+                    <div class="admin-badge-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div>
+                        <h2 class="modal-title">Admin Control & Settings Hub</h2>
+                        <p class="modal-desc">Manage movie catalog, configure PI IDs, API connections, and system controls.</p>
+                    </div>
+                </div>
+                <div class="admin-status-indicator">
+                    <span class="status-pulse-dot" style="background: #f59e0b;"></span>
+                    <span>Admin Session Active</span>
+                </div>
+            </div>
+
+            <!-- Admin Tabs -->
+            <div class="admin-nav-tabs">
+                <button onclick="switchAdminTab('movies')" id="adminTabBtn-movies" class="admin-tab-btn active">
+                    <i class="fa-solid fa-film"></i>
+                    <span>Movie Database (<span id="adminTotalMoviesCount">0</span>)</span>
+                </button>
+                <button onclick="switchAdminTab('add')" id="adminTabBtn-add" class="admin-tab-btn">
+                    <i class="fa-solid fa-plus-circle"></i>
+                    <span>Add New Movie</span>
+                </button>
+                <button onclick="switchAdminTab('pi')" id="adminTabBtn-pi" class="admin-tab-btn">
+                    <i class="fa-solid fa-key"></i>
+                    <span>PI ID & API Config</span>
+                </button>
+                <button onclick="switchAdminTab('system')" id="adminTabBtn-system" class="admin-tab-btn">
+                    <i class="fa-solid fa-database"></i>
+                    <span>Catalog & Backup</span>
+                </button>
+            </div>
+
+            <!-- TAB 1: MOVIE DATABASE MANAGER -->
+            <div id="adminTabContent-movies" class="admin-tab-pane">
+                <div class="admin-pane-header">
+                    <div class="admin-search-wrap">
+                        <i class="fa-solid fa-magnifying-glass admin-search-icon"></i>
+                        <input type="text" id="adminCatalogSearchInput" placeholder="Filter movies by title, director, category..." oninput="handleAdminSearch(this.value)" class="form-input">
+                    </div>
+                    <button onclick="switchAdminTab('add')" class="btn-primary" style="white-space: nowrap; padding: 8px 16px;">
+                        <i class="fa-solid fa-plus"></i> Add Movie
+                    </button>
+                </div>
+
+                <div class="admin-table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Movie Title</th>
+                                <th>Category</th>
+                                <th>Year</th>
+                                <th>Runtime</th>
+                                <th>Critic / Aud</th>
+                                <th>ML Verdict</th>
+                                <th>Regret Risk</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminMoviesTableBody">
+                            <!-- Populated dynamically by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 2: ADD NEW MOVIE FORM -->
+            <div id="adminTabContent-add" class="admin-tab-pane hidden">
+                <form id="adminAddMovieForm" onsubmit="handleAdminAddMovieSubmit(event)" class="admin-add-form">
+                    <div class="admin-form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Movie Title *</label>
+                            <input type="text" id="adminNewTitle" required placeholder="e.g. Dune: Part Two" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Release Year *</label>
+                            <input type="number" id="adminNewYear" required min="1920" max="2030" value="2024" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Category *</label>
+                            <select id="adminNewCategory" class="filter-select">
+                                <option value="Hollywood">Hollywood</option>
+                                <option value="Bollywood">Bollywood</option>
+                                <option value="International">International Cinema</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Runtime (Minutes) *</label>
+                            <input type="number" id="adminNewRuntime" required min="30" max="400" value="135" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Genre(s) *</label>
+                            <input type="text" id="adminNewGenres" required placeholder="e.g. Sci-Fi, Adventure, Drama" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Director</label>
+                            <input type="text" id="adminNewDirector" placeholder="e.g. Denis Villeneuve" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Lead Cast</label>
+                            <input type="text" id="adminNewActors" placeholder="e.g. Timothée Chalamet, Zendaya" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Poster Image URL (Optional)</label>
+                            <input type="url" id="adminNewPoster" placeholder="https://image.tmdb.org/... or leave empty" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Critic Tomatometer Score (%)</label>
+                            <input type="number" id="adminNewCritic" min="0" max="100" value="88" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Audience Approval Score (%)</label>
+                            <input type="number" id="adminNewAudience" min="0" max="100" value="94" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">ML Verdict *</label>
+                            <select id="adminNewVerdict" class="filter-select">
+                                <option value="Crowd Pleaser">Crowd Pleaser (High Audience + High Critic)</option>
+                                <option value="Hidden Gem">Hidden Gem (High Critic + Modest Audience)</option>
+                                <option value="Overhyped">Overhyped (High Critic + Low Audience)</option>
+                                <option value="Arthouse Slog">Arthouse Slog (Low Audience + Niche Critic)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Regret Risk Score (% 0-100)</label>
+                            <input type="number" id="adminNewRisk" min="0" max="100" value="12" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Ending Satisfaction</label>
+                            <select id="adminNewEnding" class="filter-select">
+                                <option value="Satisfying (94%)">Satisfying (94%)</option>
+                                <option value="Satisfying (88%)">Satisfying (88%)</option>
+                                <option value="Divisive (52%)">Divisive (52%)</option>
+                                <option value="Heartbreaking (79%)">Heartbreaking (79%)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Pacing Mood</label>
+                            <select id="adminNewPacing" class="filter-select">
+                                <option value="Balanced">Balanced</option>
+                                <option value="Brisk">Brisk</option>
+                                <option value="Slow Burn">Slow Burn</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 10px;">
+                        <label class="form-label">Synopsis / Storyline</label>
+                        <textarea id="adminNewSynopsis" rows="3" placeholder="Brief summary of the film..." class="sentiment-textarea" style="min-height: 70px;"></textarea>
+                    </div>
+
+                    <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 15px;">
+                        <button type="button" onclick="switchAdminTab('movies')" class="btn-secondary">Cancel</button>
+                        <button type="submit" class="btn-primary">
+                            <i class="fa-solid fa-plus"></i> Add Movie to Database
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- TAB 3: PI ID & API INTEGRATION SETTINGS -->
+            <div id="adminTabContent-pi" class="admin-tab-pane hidden">
+                <form id="adminPiConfigForm" onsubmit="handleSavePiConfig(event)" class="admin-config-form">
+                    <div class="admin-config-card">
+                        <div class="config-card-header">
+                            <div class="config-icon"><i class="fa-solid fa-fingerprint"></i></div>
+                            <div>
+                                <h4 style="font-size: 14px; font-weight: 800; color: white;">PI ID (Partner / Provider Integration ID)</h4>
+                                <p style="font-size: 12px; color: var(--text-muted);">Configured identifier for content providers, telemetry, or streaming partner synchronization.</p>
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-top: 12px;">
+                            <label class="form-label">Primary PI ID</label>
+                            <input type="text" id="adminConfigPiId" placeholder="e.g. PI-9821-BINGE-PRO" class="form-input">
+                        </div>
+                        <div class="config-status-pill">
+                            <span>Active Status:</span>
+                            <strong id="adminPiStatusDisplay" style="color: #34d399;">Active (PI-9821-BINGE-PRO)</strong>
+                        </div>
+                    </div>
+
+                    <div class="admin-config-card">
+                        <div class="config-card-header">
+                            <div class="config-icon"><i class="fa-solid fa-network-wired"></i></div>
+                            <div>
+                                <h4 style="font-size: 14px; font-weight: 800; color: white;">Streaming Provider & TMDB API Key</h4>
+                                <p style="font-size: 12px; color: var(--text-muted);">Sync streaming availability and high-res poster art.</p>
+                            </div>
+                        </div>
+                        <div class="admin-form-grid" style="margin-top: 12px;">
+                            <div class="form-group">
+                                <label class="form-label">Stream Provider ID / Tag</label>
+                                <input type="text" id="adminConfigStreamId" placeholder="e.g. netflix, prime, hotstar" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">TMDB / Rotten Tomatoes API Key</label>
+                                <input type="password" id="adminConfigTmdbKey" placeholder="e.g. 3a89...c4" class="form-input">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="admin-config-card">
+                        <div class="config-card-header">
+                            <div class="config-icon"><i class="fa-solid fa-microchip"></i></div>
+                            <div>
+                                <h4 style="font-size: 14px; font-weight: 800; color: white;">ML Model Inference Endpoint</h4>
+                                <p style="font-size: 12px; color: var(--text-muted);">FastAPI backend endpoint for real-time model inference and sentiment scoring.</p>
+                            </div>
+                        </div>
+                        <div class="admin-form-grid" style="margin-top: 12px;">
+                            <div class="form-group">
+                                <label class="form-label">Inference Server URL</label>
+                                <input type="url" id="adminConfigMlUrl" placeholder="http://127.0.0.1:8000" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">API Secret Token / Webhook</label>
+                                <input type="password" id="adminConfigSecretToken" placeholder="sk_live_..." class="form-input">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 15px;">
+                        <button type="submit" class="btn-primary">
+                            <i class="fa-solid fa-floppy-disk"></i> Save PI & API Settings
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- TAB 4: DATABASE CONTROLS & BACKUP -->
+            <div id="adminTabContent-system" class="admin-tab-pane hidden">
+                <div class="system-controls-grid">
+                    <div class="admin-config-card">
+                        <h4 style="font-size: 14px; font-weight: 800; color: white; margin-bottom: 6px;">
+                            <i class="fa-solid fa-file-export" style="color: #38bdf8;"></i> Export Movie Catalog
+                        </h4>
+                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">
+                            Download current catalog as a formatted JSON file including custom added titles and ML verdicts.
+                        </p>
+                        <button onclick="exportCatalogJson()" class="btn-secondary">
+                            <i class="fa-solid fa-download"></i> Export JSON
+                        </button>
+                    </div>
+
+                    <div class="admin-config-card">
+                        <h4 style="font-size: 14px; font-weight: 800; color: white; margin-bottom: 6px;">
+                            <i class="fa-solid fa-rotate-left" style="color: #f59e0b;"></i> Restore Default ML Catalog
+                        </h4>
+                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">
+                            Revert catalog back to the baseline 420 ML-scored movies dataset.
+                        </p>
+                        <button onclick="resetMoviesToDefault()" class="btn-secondary" style="border-color: #f59e0b; color: #fbbf24;">
+                            <i class="fa-solid fa-arrow-rotate-left"></i> Restore Defaults
+                        </button>
+                    </div>
+
+                    <div class="admin-config-card">
+                        <h4 style="font-size: 14px; font-weight: 800; color: #ef4444; margin-bottom: 6px;">
+                            <i class="fa-solid fa-trash-can" style="color: #ef4444;"></i> Clear Local Storage
+                        </h4>
+                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">
+                            Purge local watchlists and temporary cached sessions.
+                        </p>
+                        <button onclick="clearAdminCaches()" class="btn-secondary" style="border-color: #ef4444; color: #f87171;">
+                            <i class="fa-solid fa-triangle-exclamation"></i> Clear Cache
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: right; padding-top: 16px; border-top: 1px solid var(--border-subtle); margin-top: 10px;">
+                <button onclick="closeAdminModal()" class="btn-secondary">Close Admin Hub</button>
             </div>
         </div>
     </div>

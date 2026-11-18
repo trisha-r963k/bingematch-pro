@@ -12,6 +12,7 @@ let currentCategory = 'All';
 let currentVerdictFilter = 'all';
 let currentSelectedMovie = null;
 let userWatchlist = [];
+let currentLoggedInUser = null;
 let backendAvailable = false;
 const API_BASE_URL = 'http://127.0.0.1:8000';
 
@@ -83,6 +84,22 @@ function initAmbientCanvas() {
 
 // ==================== DATASET INITIALIZATION ====================
 function initializeDataset() {
+    // Check if custom / edited dataset exists in localStorage
+    const saved = localStorage.getItem('bingematch_movies_dataset');
+    if (saved) {
+        try {
+            const parsed = JSON.parse(saved);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+                allMovies = parsed;
+                filteredMovies = [...allMovies];
+                checkBackendHealth();
+                return;
+            }
+        } catch (e) {
+            console.warn("Failed to parse saved dataset from localStorage, fallback to curated dataset", e);
+        }
+    }
+
     if (window.BINGEMATCH_MOVIES_DATA && Array.isArray(window.BINGEMATCH_MOVIES_DATA) && window.BINGEMATCH_MOVIES_DATA.length > 0) {
         allMovies = window.BINGEMATCH_MOVIES_DATA.map((m, idx) => ({
             id: m.rotten_tomatoes_link || `m_${idx}`,
@@ -113,6 +130,7 @@ function initializeDataset() {
             synopsis: m.movie_info || "An acclaimed cinematic exploration of human nature, dramatic depth and compelling storytelling.",
             saferAlternative: m.safer_alternative || (m.verdict === 'Overhyped' ? "Inception or 3 Idiots" : "")
         }));
+        saveMoviesDataset();
     } else {
         console.warn("Curated movies data not preloaded, using fallback...");
         allMovies = [];
@@ -120,6 +138,14 @@ function initializeDataset() {
 
     filteredMovies = [...allMovies];
     checkBackendHealth();
+}
+
+function saveMoviesDataset() {
+    try {
+        localStorage.setItem('bingematch_movies_dataset', JSON.stringify(allMovies));
+    } catch (e) {
+        console.warn("Could not save movies dataset to localStorage:", e);
+    }
 }
 
 async function checkBackendHealth() {
@@ -389,6 +415,11 @@ function renderGrid() {
                         <button onclick="toggleMovieWatchlist(event, '${movie.id}')" title="${inWl ? 'Remove from Watchlist' : 'Add to Watchlist'}" class="card-watchlist-toggle ${inWl ? 'active' : ''}">
                             <i class="fa-${inWl ? 'solid' : 'regular'} fa-heart"></i>
                         </button>
+                        ${(currentLoggedInUser && currentLoggedInUser.toLowerCase() === 'admin') ? `
+                            <button onclick="deleteMovieByAdmin(event, '${movie.id}')" title="Admin: Delete Movie" class="card-admin-delete-btn">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        ` : ''}
                     </div>
                 </div>
 
@@ -537,8 +568,22 @@ function openMovieDetails(movieId) {
         altContainer.classList.add('hidden');
     }
 
+    const adminDelBtn = document.getElementById('modalAdminDeleteBtn');
+    if (adminDelBtn) {
+        if (currentLoggedInUser && currentLoggedInUser.toLowerCase() === 'admin') {
+            adminDelBtn.classList.remove('hidden');
+        } else {
+            adminDelBtn.classList.add('hidden');
+        }
+    }
+
     updateModalWatchlistButton();
     modal.classList.remove('hidden');
+}
+
+function deleteCurrentMovieFromModal() {
+    if (!currentSelectedMovie) return;
+    deleteMovieByAdmin(null, currentSelectedMovie.id);
 }
 
 function closeMovieDetailsModal() {
@@ -792,6 +837,18 @@ function handleLoginSubmit(event) {
     const usernameInput = document.getElementById('loginUsername').value.trim();
     const passwordInput = document.getElementById('loginPassword').value.trim();
 
+    // Default Admin Check: username: "admin", password: "admin"
+    if (usernameInput.toLowerCase() === "admin") {
+        if (passwordInput === "admin") {
+            localStorage.setItem('bingematch_logged_in_user', 'admin');
+            enterAppAsUser('admin', true);
+            return;
+        } else {
+            alert('Incorrect Admin Password! (Default credentials: admin / admin)');
+            return;
+        }
+    }
+
     const savedUser = localStorage.getItem('bingematch_user_' + usernameInput);
     const savedPass = localStorage.getItem('bingematch_pass_' + usernameInput);
 
@@ -812,6 +869,11 @@ function handleSignupSubmit(event) {
     event.preventDefault();
     const newUsername = document.getElementById('signupUsername').value.trim();
     const newPassword = document.getElementById('signupPassword').value.trim();
+
+    if (newUsername.toLowerCase() === 'admin') {
+        alert('Username "admin" is reserved for the default administrator.');
+        return;
+    }
 
     if (newUsername && newPassword) {
         if (localStorage.getItem('bingematch_user_' + newUsername)) {
@@ -838,8 +900,15 @@ function handleForgotSubmit(event) {
 
 function handleLogout() {
     localStorage.removeItem('bingematch_logged_in_user');
+    currentLoggedInUser = null;
     const loginGate = document.getElementById('loginGate');
     const mainApp = document.getElementById('mainApp');
+
+    const adminNavBtn = document.getElementById('adminNavBtn');
+    const adminRoleBadge = document.getElementById('adminRoleBadge');
+    if (adminNavBtn) adminNavBtn.classList.add('hidden');
+    if (adminRoleBadge) adminRoleBadge.classList.add('hidden');
+
     if (loginGate) {
         loginGate.classList.remove('hidden', 'fade-out-anim');
         loginGate.classList.add('fade-in-anim');
@@ -859,6 +928,9 @@ function handleLogout() {
 }
 
 function enterAppAsUser(username, animate = false) {
+    currentLoggedInUser = username;
+    const isAdmin = (username.toLowerCase() === 'admin');
+
     const loginGate = document.getElementById('loginGate');
     const mainApp = document.getElementById('mainApp');
 
@@ -867,6 +939,19 @@ function enterAppAsUser(username, animate = false) {
     if (displayUser) displayUser.innerText = username;
     if (avatarLetter) avatarLetter.innerText = username.charAt(0).toUpperCase();
 
+    // Toggle Admin Navigation Button and Admin Role Badge
+    const adminNavBtn = document.getElementById('adminNavBtn');
+    const adminRoleBadge = document.getElementById('adminRoleBadge');
+    if (adminNavBtn) {
+        if (isAdmin) adminNavBtn.classList.remove('hidden');
+        else adminNavBtn.classList.add('hidden');
+    }
+    if (adminRoleBadge) {
+        if (isAdmin) adminRoleBadge.classList.remove('hidden');
+        else adminRoleBadge.classList.add('hidden');
+    }
+
+    loadAdminConfig();
     loadUserWatchlist(username);
     renderGenrePills();
     renderGrid();
@@ -898,6 +983,318 @@ function enterAppAsUser(username, animate = false) {
             mainApp.classList.remove('hidden');
             mainApp.classList.remove('fade-in-anim');
         }
+    }
+}
+
+// ==================== ADMIN CONTROL PANEL & PI ID SETTINGS ====================
+function openAdminModal() {
+    if (!currentLoggedInUser || currentLoggedInUser.toLowerCase() !== 'admin') {
+        alert("Access Denied: Only administrators can access Admin Settings.");
+        return;
+    }
+    const modal = document.getElementById('adminModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        switchAdminTab('movies');
+        renderAdminMoviesTable();
+        loadAdminConfig();
+    }
+}
+
+function closeAdminModal() {
+    const modal = document.getElementById('adminModal');
+    if (modal) modal.classList.add('hidden');
+}
+
+function switchAdminTab(tabName) {
+    const tabs = ['movies', 'add', 'pi', 'system'];
+    tabs.forEach(t => {
+        const btn = document.getElementById(`adminTabBtn-${t}`);
+        const pane = document.getElementById(`adminTabContent-${t}`);
+        if (btn) {
+            if (t === tabName) btn.classList.add('active');
+            else btn.classList.remove('active');
+        }
+        if (pane) {
+            if (t === tabName) pane.classList.remove('hidden');
+            else pane.classList.add('hidden');
+        }
+    });
+
+    if (tabName === 'movies') {
+        renderAdminMoviesTable(document.getElementById('adminCatalogSearchInput')?.value || '');
+    } else if (tabName === 'pi') {
+        loadAdminConfig();
+    }
+}
+
+function handleAdminSearch(val) {
+    renderAdminMoviesTable(val);
+}
+
+function renderAdminMoviesTable(searchTerm = '') {
+    const tbody = document.getElementById('adminMoviesTableBody');
+    const countEl = document.getElementById('adminTotalMoviesCount');
+    if (!tbody) return;
+
+    const term = searchTerm.toLowerCase().trim();
+    const list = term ? allMovies.filter(m => 
+        m.title.toLowerCase().includes(term) ||
+        (m.director && m.director.toLowerCase().includes(term)) ||
+        (m.category && m.category.toLowerCase().includes(term)) ||
+        (m.verdict && m.verdict.toLowerCase().includes(term))
+    ) : allMovies;
+
+    if (countEl) countEl.innerText = allMovies.length;
+    tbody.innerHTML = '';
+
+    if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 24px; color: var(--text-muted);">No movies matched search query.</td></tr>`;
+        return;
+    }
+
+    // Preview up to 100 entries for optimal DOM performance
+    const previewList = list.slice(0, 100);
+
+    previewList.forEach(m => {
+        const tr = document.createElement('tr');
+        const vInfo = getVerdictBadgeInfo(m.verdict);
+        const regretCls = getRegretClass(m.risk);
+
+        tr.innerHTML = `
+            <td>
+                <div style="font-weight: 700; color: white;">${escapeHtml(m.title)}</div>
+                <div style="font-size: 10px; color: var(--text-muted);">${escapeHtml(m.director || 'Filmmakers')}</div>
+            </td>
+            <td><span class="card-category-tag" style="font-size: 9px;">${escapeHtml(m.category)}</span></td>
+            <td>${m.year}</td>
+            <td>${m.runtime}m</td>
+            <td>
+                <span style="color: var(--accent-red); font-weight: 700;">${m.critic}%</span> / 
+                <span style="color: #fbbf24; font-weight: 700;">${m.audience}%</span>
+            </td>
+            <td>
+                <span class="verdict-tag ${vInfo.cls}" style="font-size: 9px; padding: 2px 6px;">
+                    <i class="fa-solid ${vInfo.icon}"></i> ${vInfo.label}
+                </span>
+            </td>
+            <td>
+                <span class="regret-pill ${regretCls}" style="font-size: 10px; padding: 2px 6px;">
+                    ${m.risk}%
+                </span>
+            </td>
+            <td>
+                <button onclick="deleteMovieByAdmin(event, '${m.id}')" title="Delete ${escapeHtml(m.title)}" class="card-admin-delete-btn">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+
+    if (list.length > 100) {
+        const moreRow = document.createElement('tr');
+        moreRow.innerHTML = `<td colspan="8" style="text-align: center; font-size: 11px; color: var(--text-muted); padding: 8px;">Showing first 100 of ${list.length} movies. Use search bar above to filter titles.</td>`;
+        tbody.appendChild(moreRow);
+    }
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function deleteMovieByAdmin(event, movieId) {
+    if (event) event.stopPropagation();
+
+    if (!currentLoggedInUser || currentLoggedInUser.toLowerCase() !== 'admin') {
+        alert("Permission denied. Only administrator can delete movies.");
+        return;
+    }
+
+    const movie = allMovies.find(m => m.id === movieId);
+    const title = movie ? movie.title : "this movie";
+
+    if (!confirm(`Are you sure you want to permanently delete "${title}" from the cinema database?`)) {
+        return;
+    }
+
+    allMovies = allMovies.filter(m => m.id !== movieId);
+    saveMoviesDataset();
+    applyFilters();
+    renderGrid();
+    renderAdminMoviesTable(document.getElementById('adminCatalogSearchInput')?.value || '');
+
+    // If deleted movie is currently open in details modal, close it
+    if (currentSelectedMovie && currentSelectedMovie.id === movieId) {
+        closeMovieDetailsModal();
+    }
+}
+
+function handleAdminAddMovieSubmit(event) {
+    event.preventDefault();
+    if (!currentLoggedInUser || currentLoggedInUser.toLowerCase() !== 'admin') {
+        alert("Permission denied. Only administrator can add movies.");
+        return;
+    }
+
+    const title = document.getElementById('adminNewTitle').value.trim();
+    const year = parseInt(document.getElementById('adminNewYear').value) || 2024;
+    const category = document.getElementById('adminNewCategory').value;
+    const runtime = parseInt(document.getElementById('adminNewRuntime').value) || 120;
+    const genresStr = document.getElementById('adminNewGenres').value.trim() || "Drama";
+    const director = document.getElementById('adminNewDirector').value.trim() || "Filmmakers";
+    const actors = document.getElementById('adminNewActors').value.trim() || "Ensemble";
+    const poster = document.getElementById('adminNewPoster').value.trim();
+    const critic = parseInt(document.getElementById('adminNewCritic').value) || 75;
+    const audience = parseInt(document.getElementById('adminNewAudience').value) || 75;
+    const verdict = document.getElementById('adminNewVerdict').value;
+    const risk = parseInt(document.getElementById('adminNewRisk').value) || 20;
+    const ending = document.getElementById('adminNewEnding').value;
+    const pacing = document.getElementById('adminNewPacing').value;
+    const synopsis = document.getElementById('adminNewSynopsis').value.trim() || "An acclaimed film added by the administrator with distinct storytelling and critical consensus.";
+
+    const genresArr = genresStr.split(',').map(g => g.trim()).filter(Boolean);
+    const primaryGenres = genresArr.slice(0, 2).join(' / ');
+
+    const newMovie = {
+        id: `m_custom_${Date.now()}`,
+        title: title,
+        year: year,
+        category: category,
+        runtime: runtime,
+        genres: genresArr.length > 0 ? genresArr : ["Drama"],
+        genre: primaryGenres || "Drama",
+        director: director,
+        actors: actors,
+        critic: critic,
+        audience: audience,
+        gap: critic - audience,
+        verdict: verdict,
+        risk: risk,
+        regret_score: risk,
+        probabilities: {
+            "Crowd Pleaser": verdict === 'Crowd Pleaser' ? 0.85 : 0.05,
+            "Hidden Gem": verdict === 'Hidden Gem' ? 0.85 : 0.05,
+            "Overhyped": verdict === 'Overhyped' ? 0.85 : 0.05,
+            "Arthouse Slog": verdict === 'Arthouse Slog' ? 0.85 : 0.05
+        },
+        ending_satisfaction: ending.includes('%') ? parseInt(ending.match(/\d+/)[0]) / 100 : 0.9,
+        pacing_score: pacing === 'Fast' ? 0.88 : (pacing === 'Slow Burn' ? 0.45 : 0.65),
+        pacing: pacing.toLowerCase(),
+        why_features: [`Category: ${category}`, `Runtime: ${runtime}m`, `Audience: ${audience}%`, `ML Verdict: ${verdict}`],
+        synopsis: synopsis,
+        saferAlternative: risk > 40 ? "The Dark Knight or 3 Idiots" : ""
+    };
+
+    // Add to the front of allMovies so it immediately appears first
+    allMovies.unshift(newMovie);
+    saveMoviesDataset();
+    applyFilters();
+    renderGrid();
+    renderGenrePills();
+
+    // Reset form
+    document.getElementById('adminAddMovieForm').reset();
+    alert(`Success! "${title}" has been added to the database.`);
+    switchAdminTab('movies');
+}
+
+function loadAdminConfig() {
+    const raw = localStorage.getItem('bingematch_admin_config');
+    let cfg = {
+        pi_id: "PI-9821-BINGE-PRO",
+        stream_id: "netflix, prime, hotstar",
+        tmdb_key: "tmdb_live_key_9042",
+        ml_url: "http://127.0.0.1:8000",
+        secret_token: "sk_live_bingematch_enterprise"
+    };
+    if (raw) {
+        try { cfg = Object.assign(cfg, JSON.parse(raw)); } catch(e) {}
+    }
+
+    const piInput = document.getElementById('adminConfigPiId');
+    const streamInput = document.getElementById('adminConfigStreamId');
+    const tmdbInput = document.getElementById('adminConfigTmdbKey');
+    const mlInput = document.getElementById('adminConfigMlUrl');
+    const secretInput = document.getElementById('adminConfigSecretToken');
+    const statusDisp = document.getElementById('adminPiStatusDisplay');
+
+    if (piInput) piInput.value = cfg.pi_id || '';
+    if (streamInput) streamInput.value = cfg.stream_id || '';
+    if (tmdbInput) tmdbInput.value = cfg.tmdb_key || '';
+    if (mlInput) mlInput.value = cfg.ml_url || '';
+    if (secretInput) secretInput.value = cfg.secret_token || '';
+    if (statusDisp) statusDisp.innerText = `Active (${cfg.pi_id || 'Not Set'})`;
+
+    return cfg;
+}
+
+function handleSavePiConfig(event) {
+    if (event) event.preventDefault();
+    if (!currentLoggedInUser || currentLoggedInUser.toLowerCase() !== 'admin') {
+        alert("Permission denied. Only administrator can modify system configurations.");
+        return;
+    }
+
+    const cfg = {
+        pi_id: document.getElementById('adminConfigPiId')?.value.trim() || 'PI-DEFAULT',
+        stream_id: document.getElementById('adminConfigStreamId')?.value.trim() || '',
+        tmdb_key: document.getElementById('adminConfigTmdbKey')?.value.trim() || '',
+        ml_url: document.getElementById('adminConfigMlUrl')?.value.trim() || 'http://127.0.0.1:8000',
+        secret_token: document.getElementById('adminConfigSecretToken')?.value.trim() || ''
+    };
+
+    localStorage.setItem('bingematch_admin_config', JSON.stringify(cfg));
+    const statusDisp = document.getElementById('adminPiStatusDisplay');
+    if (statusDisp) statusDisp.innerText = `Active (${cfg.pi_id})`;
+
+    alert(`Configuration Saved!\nPrimary PI ID: ${cfg.pi_id}\nAPI connections updated.`);
+}
+
+function exportCatalogJson() {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(allMovies, null, 2));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", `bingematch_catalog_export_${Date.now()}.json`);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+}
+
+function resetMoviesToDefault() {
+    if (!currentLoggedInUser || currentLoggedInUser.toLowerCase() !== 'admin') {
+        alert("Permission denied.");
+        return;
+    }
+    if (confirm("Restore catalog back to original 420 ML-scored movies? Any custom movies added will be removed.")) {
+        localStorage.removeItem('bingematch_movies_dataset');
+        allMovies = [];
+        initializeDataset();
+        applyFilters();
+        renderGrid();
+        renderGenrePills();
+        renderAdminMoviesTable();
+        alert("Catalog successfully restored to default ML dataset!");
+    }
+}
+
+function clearAdminCaches() {
+    if (!currentLoggedInUser || currentLoggedInUser.toLowerCase() !== 'admin') {
+        alert("Permission denied.");
+        return;
+    }
+    if (confirm("Clear local watchlists and temporary user sessions?")) {
+        localStorage.removeItem('bingematch_watchlist_admin');
+        localStorage.removeItem('bingematch_watchlist_homraj');
+        loadUserWatchlist('admin');
+        renderGrid();
+        alert("Local cache cleared successfully.");
     }
 }
 
