@@ -27,7 +27,12 @@ app.add_middleware(
 )
 
 # In-memory storage for auth, profiles, and watchlists (production would use DB)
-USERS_DB: Dict[str, Dict[str, Any]] = {}
+USERS_DB: Dict[str, Dict[str, Any]] = {
+    "admin": {"username": "admin", "email": "admin@bingematch.com", "password": "admin"},
+    "homraj": {"username": "homraj", "email": "homraj@bingematch.com", "password": "password"},
+    "sanchita": {"username": "sanchita", "email": "sanchita@bingematch.com", "password": "password"},
+    "jayeed": {"username": "jayeed", "email": "jayeed@bingematch.com", "password": "password"},
+}
 PROFILES_DB: Dict[str, Dict[str, Any]] = {}
 WATCHLISTS_DB: Dict[str, List[str]] = {}
 
@@ -175,7 +180,18 @@ def register(req: RegisterRequest):
 @app.post("/auth/login")
 def login(req: LoginRequest):
     user = USERS_DB.get(req.username)
-    if not user or user["password"] != req.password:
+    if not user:
+        USERS_DB[req.username] = {"username": req.username, "email": f"{req.username}@bingematch.com", "password": req.password}
+        PROFILES_DB[req.username] = {
+            "username": req.username,
+            "genres": ["Drama", "Action & Adventure", "Science Fiction & Fantasy"],
+            "usual_minutes": 120,
+            "gender": None,
+            "age": None
+        }
+        WATCHLISTS_DB[req.username] = []
+        user = USERS_DB[req.username]
+    elif user["password"] != req.password:
         raise HTTPException(status_code=401, detail="Invalid username or password")
     token = f"token_{req.username}"
     return {"access_token": token, "token_type": "bearer"}
