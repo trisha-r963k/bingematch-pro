@@ -967,6 +967,53 @@ function handleLogout() {
     if (p) p.value = '';
 }
 
+// ==================== CINEMATIC SPLASH TRANSITION ====================
+function triggerCinematicSplash(onComplete) {
+    const splash = document.getElementById('cinematicSplash');
+    if (!splash) {
+        if (onComplete) onComplete();
+        return;
+    }
+
+    const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+        if (onComplete) onComplete();
+        return;
+    }
+
+    splash.classList.remove('hidden', 'splash-fade-out');
+    splash.setAttribute('aria-hidden', 'false');
+
+    let completed = false;
+    function finish() {
+        if (completed) return;
+        completed = true;
+        window.removeEventListener('keydown', handleKey);
+        splash.removeEventListener('click', finish);
+
+        splash.classList.add('splash-fade-out');
+        setTimeout(() => {
+            splash.classList.add('hidden');
+            splash.classList.remove('splash-fade-out');
+            splash.setAttribute('aria-hidden', 'true');
+        }, 220);
+
+        if (onComplete) onComplete();
+    }
+
+    function handleKey(e) {
+        if (e.key === 'Escape' || e.key === ' ' || e.key === 'Enter') {
+            finish();
+        }
+    }
+
+    splash.addEventListener('click', finish);
+    window.addEventListener('keydown', handleKey);
+
+    // Auto complete after 1.6s
+    setTimeout(finish, 1600);
+}
+
 function enterAppAsUser(username, animate = false) {
     const loginGate = document.getElementById('loginGate');
     const mainApp = document.getElementById('mainApp');
@@ -981,23 +1028,14 @@ function enterAppAsUser(username, animate = false) {
     renderGrid();
 
     if (animate && loginGate && mainApp) {
-        // Trigger cinematic fade out and zoom animation on login gate
-        loginGate.classList.remove('fade-in-anim');
-        loginGate.classList.add('fade-out-anim');
-
-        // After 450ms, hide gate and reveal dashboard with smooth fade-in
-        setTimeout(() => {
-            loginGate.classList.add('hidden');
-            loginGate.classList.remove('fade-out-anim');
-
+        loginGate.classList.add('hidden');
+        triggerCinematicSplash(() => {
             mainApp.classList.remove('hidden');
             mainApp.classList.add('fade-in-anim');
-
-            // Clean up animation class once complete
             setTimeout(() => {
                 mainApp.classList.remove('fade-in-anim');
             }, 600);
-        }, 450);
+        });
     } else {
         if (loginGate) {
             loginGate.classList.add('hidden');

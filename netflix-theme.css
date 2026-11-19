@@ -1,0 +1,523 @@
+/* ==========================================================================
+   BingeMatch Pro - Netflix Cinematic Dark Theme Overrides
+   Pure System Font Stack • 100% Offline • 60 FPS GPU-Accelerated Animations
+   ========================================================================== */
+
+/* 1. System Font Stack & Reset Overrides */
+html, body, button, input, select, textarea {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    background-color: #0b0b0f !important;
+    color: #f1f5f9;
+    overflow-x: hidden;
+}
+
+/* 2. Custom Thin Dark Cinematic Scrollbar */
+::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+}
+::-webkit-scrollbar-track {
+    background: #0b0b0f;
+}
+::-webkit-scrollbar-thumb {
+    background: #22222b;
+    border-radius: 4px;
+    transition: background 0.2s ease;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #e50914;
+}
+
+/* 3. Ambient Background Layer (z-index: -1, pointer-events: none) */
+.netflix-bg-ambient {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+    background: #0b0b0f;
+}
+
+/* Drifting Gradient Orbs */
+.netflix-bg-ambient::before,
+.netflix-bg-ambient::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    will-change: transform, opacity;
+    pointer-events: none;
+}
+
+/* Top-Left Crimson Glow Orb */
+.netflix-bg-ambient::before {
+    top: -20%;
+    left: -10%;
+    width: 65vw;
+    height: 65vw;
+    max-width: 850px;
+    max-height: 850px;
+    background: radial-gradient(circle, rgba(229, 9, 20, 0.16) 0%, rgba(185, 28, 28, 0.08) 45%, transparent 70%);
+    animation: driftOrbOne 32s ease-in-out infinite alternate;
+}
+
+/* Bottom-Right Deep Crimson & Charcoal Glow Orb */
+.netflix-bg-ambient::after {
+    bottom: -20%;
+    right: -10%;
+    width: 70vw;
+    height: 70vw;
+    max-width: 900px;
+    max-height: 900px;
+    background: radial-gradient(circle, rgba(220, 38, 38, 0.12) 0%, rgba(30, 20, 25, 0.15) 50%, transparent 75%);
+    animation: driftOrbTwo 38s ease-in-out infinite alternate;
+}
+
+/* Subtle Film-Grain Noise Overlay (SVG Data-URI, lightweight) */
+.netflix-film-grain {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.038;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    pointer-events: none;
+}
+
+/* Floating Light Particles / Film Streaks Layer */
+.netflix-ambient-lines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at 50% 0%, rgba(229, 9, 20, 0.05) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+/* Keyframe animations for Ambient Orbs */
+@keyframes driftOrbOne {
+    0% {
+        transform: translate3d(0, 0, 0) scale(1);
+        opacity: 0.85;
+    }
+    50% {
+        transform: translate3d(12vw, 10vh, 0) scale(1.12);
+        opacity: 1;
+    }
+    100% {
+        transform: translate3d(4vw, 18vh, 0) scale(0.95);
+        opacity: 0.75;
+    }
+}
+
+@keyframes driftOrbTwo {
+    0% {
+        transform: translate3d(0, 0, 0) scale(1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: translate3d(-10vw, -12vh, 0) scale(1.15);
+        opacity: 1;
+    }
+    100% {
+        transform: translate3d(-5vw, -6vh, 0) scale(0.92);
+        opacity: 0.7;
+    }
+}
+
+/* 4. Navbar Sticky Transitions & Blurred Scrolled State */
+.navbar {
+    transition: background-color 0.35s ease, backdrop-filter 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease !important;
+    background: rgba(11, 11, 15, 0.45) !important;
+    backdrop-filter: blur(10px) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+.navbar.nav-scrolled {
+    background: rgba(14, 14, 18, 0.94) !important;
+    backdrop-filter: blur(24px) !important;
+    border-bottom: 1px solid rgba(229, 9, 20, 0.3) !important;
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Navigation Category Pills */
+.category-btn {
+    border-radius: 9999px !important;
+    font-weight: 600 !important;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    letter-spacing: 0.2px;
+}
+.category-btn:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+    transform: translateY(-1px);
+}
+.category-btn.active {
+    background: #e50914 !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 18px rgba(229, 9, 20, 0.4) !important;
+}
+
+/* Action Header Pills */
+.action-pill-btn {
+    border-radius: 9999px !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.action-pill-btn:hover {
+    background: rgba(229, 9, 20, 0.15) !important;
+    border-color: rgba(229, 9, 20, 0.5) !important;
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(229, 9, 20, 0.25);
+}
+
+/* 5. Hero Spotlight Banner - Netflix Ken Burns & Full-Bleed Aesthetics */
+.spotlight-card {
+    border-radius: 20px !important;
+    border: 1px solid rgba(229, 9, 20, 0.35) !important;
+    box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.9), 0 0 35px rgba(229, 9, 20, 0.15) !important;
+    background-color: #121217 !important;
+    overflow: hidden !important;
+}
+
+/* Ken Burns Subtle Zoom / Drift Effect */
+@keyframes kenBurnsDrift {
+    0% {
+        transform: scale(1.02) translate3d(0, 0, 0);
+    }
+    50% {
+        transform: scale(1.09) translate3d(-1%, -1%, 0);
+    }
+    100% {
+        transform: scale(1.02) translate3d(0, 0, 0);
+    }
+}
+
+.spotlight-animated-bg {
+    animation: kenBurnsDrift 28s ease-in-out infinite alternate !important;
+    will-change: transform;
+}
+
+/* Netflix Multi-Directional Gradient Overlays */
+.spotlight-overlay {
+    background: linear-gradient(to right, rgba(11, 11, 15, 0.96) 0%, rgba(11, 11, 15, 0.78) 45%, rgba(11, 11, 15, 0.3) 100%),
+                linear-gradient(to top, rgba(11, 11, 15, 0.98) 0%, rgba(11, 11, 15, 0.6) 40%, transparent 100%) !important;
+}
+
+.spotlight-title {
+    font-size: clamp(2rem, 3.8vw, 3.2rem) !important;
+    font-weight: 900 !important;
+    letter-spacing: -0.5px !important;
+    text-shadow: 0 3px 15px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* 6. Filter Controls Hub - Glass-Morphism Look */
+.control-card {
+    background: rgba(18, 18, 24, 0.68) !important;
+    backdrop-filter: blur(24px) saturate(140%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(140%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.09) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+.control-heading {
+    font-weight: 800 !important;
+    letter-spacing: 0.3px !important;
+}
+
+.custom-select, .search-input {
+    background: rgba(12, 12, 16, 0.85) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 12px !important;
+    transition: all 0.22s ease !important;
+}
+
+.custom-select:focus, .search-input:focus {
+    border-color: #e50914 !important;
+    box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.25) !important;
+    outline: none !important;
+}
+
+/* Slider in Netflix Red */
+.risk-range-slider {
+    accent-color: #e50914 !important;
+}
+
+/* 7. Movie Grid & Cards - Netflix Hover Scale Lift & Glow */
+.movie-grid {
+    gap: 22px !important;
+}
+
+.movie-card {
+    opacity: 1 !important; /* Safety Condition 1: Always visible by default */
+    background: rgba(18, 18, 24, 0.88) !important;
+    border: 1px solid rgba(255, 255, 255, 0.07) !important;
+    border-radius: 16px !important;
+    transition: transform 0.28s cubic-bezier(0.2, 0, 0.2, 1), 
+                box-shadow 0.28s cubic-bezier(0.2, 0, 0.2, 1), 
+                border-color 0.28s ease, 
+                background-color 0.28s ease !important;
+    will-change: transform, box-shadow;
+    position: relative;
+    cursor: pointer;
+}
+
+/* Netflix Card Hover: Scale 1.05 - 1.07 with Crimson Border Glow */
+.movie-card:hover {
+    transform: translateY(-7px) scale(1.06) !important;
+    z-index: 10;
+    border-color: rgba(229, 9, 20, 0.65) !important;
+    background: rgba(26, 26, 35, 0.98) !important;
+    box-shadow: 0 22px 45px -8px rgba(0, 0, 0, 0.9), 
+                0 0 25px rgba(229, 9, 20, 0.35) !important;
+}
+
+/* Watchlist heart button: ensure no hover or click conflict */
+.card-watchlist-btn {
+    pointer-events: auto !important;
+    z-index: 15 !important;
+    transition: transform 0.2s ease, background 0.2s ease !important;
+}
+.card-watchlist-btn:hover {
+    transform: scale(1.15) !important;
+}
+
+/* Progressive Enhancement Staggered Entrance Animation */
+@keyframes cardSlideFadeIn {
+    0% {
+        opacity: 0.3;
+        transform: translateY(16px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.movie-card.card-animate-in {
+    animation: cardSlideFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* 8. Buttons - Pill Style & Accessible Keyboard Focus Rings */
+.btn-primary, .btn-secondary, .btn-surprise-safe, .btn-search {
+    border-radius: 9999px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.2px !important;
+    transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.btn-primary:hover, .btn-surprise-safe:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(229, 9, 20, 0.45) !important;
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.12) !important;
+    color: #ffffff !important;
+}
+
+/* Active Press State */
+.btn-primary:active, .btn-secondary:active, .category-btn:active, .action-pill-btn:active {
+    transform: scale(0.97) !important;
+}
+
+/* Visible Keyboard Focus Rings */
+button:focus-visible, input:focus-visible, select:focus-visible {
+    outline: 2px solid #e50914 !important;
+    outline-offset: 3px !important;
+}
+
+/* 9. Section Headings with Netflix Red Accent Line */
+.catalog-title {
+    position: relative;
+    padding-bottom: 8px;
+    font-weight: 800 !important;
+}
+
+.catalog-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 48px;
+    height: 3px;
+    background: #e50914;
+    border-radius: 2px;
+}
+
+/* 10. Pause Animations when Tab is Inactive or Prefers Reduced Motion */
+body.bg-anim-paused .netflix-bg-ambient::before,
+body.bg-anim-paused .netflix-bg-ambient::after,
+body.bg-anim-paused .spotlight-animated-bg {
+    animation-play-state: paused !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .netflix-bg-ambient::before,
+    .netflix-bg-ambient::after,
+    .spotlight-animated-bg,
+    .movie-card.card-animate-in {
+        animation: none !important;
+        transition: none !important;
+    }
+    .movie-card:hover {
+        transform: none !important;
+    }
+}
+
+/* 11. Mobile & Tablet Responsiveness */
+@media (max-width: 768px) {
+    .netflix-bg-ambient::after {
+        display: none !important; /* Disable secondary heavy glow on mobile for 60fps */
+    }
+    .netflix-bg-ambient::before {
+        width: 90vw;
+        height: 90vw;
+        filter: blur(80px);
+    }
+    .movie-card:hover {
+        transform: translateY(-4px) scale(1.02) !important; /* Gentle hover scale on mobile/touch */
+    }
+    .spotlight-title {
+        font-size: 1.8rem !important;
+    }
+}
+
+
+/* 12. 3D Logo Blending & Cinematic Splash Screen */
+.auth-hero-logo,
+.nav-logo-img,
+.splash-logo {
+    mix-blend-mode: screen;
+    object-fit: contain;
+    mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 70%, rgba(0, 0, 0, 0) 100%);
+    -webkit-mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 70%, rgba(0, 0, 0, 0) 100%);
+}
+
+.auth-logo-wrap {
+    text-align: center;
+    margin-bottom: 6px;
+}
+
+.auth-hero-logo {
+    width: 175px;
+    height: auto;
+    margin: 0 auto 6px;
+    display: block;
+    filter: drop-shadow(0 0 28px rgba(229, 9, 20, 0.6));
+    transition: transform 0.3s ease;
+}
+
+.auth-hero-logo:hover {
+    transform: scale(1.04);
+}
+
+.nav-logo-img {
+    height: 38px;
+    width: auto;
+    max-width: 180px;
+    filter: drop-shadow(0 0 10px rgba(229, 9, 20, 0.5));
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+/* Fullscreen Cinematic Splash Screen */
+.cinematic-splash {
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+    background: radial-gradient(circle at center, rgba(32, 5, 8, 0.97) 0%, rgba(10, 10, 12, 0.99) 70%, #000000 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    opacity: 1;
+    transition: opacity 0.25s ease-out;
+}
+
+.cinematic-splash.hidden {
+    display: none !important;
+}
+
+.cinematic-splash.splash-fade-out {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.splash-inner {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: splashZoomIn 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.splash-logo {
+    width: min(82vw, 450px);
+    height: auto;
+    filter: drop-shadow(0 0 55px rgba(229, 9, 20, 0.9));
+}
+
+.splash-tagline {
+    font-size: 13px;
+    letter-spacing: 4px;
+    font-weight: 800;
+    color: #e50914;
+    text-shadow: 0 0 14px rgba(229, 9, 20, 0.75);
+    margin-top: 14px;
+    text-transform: uppercase;
+}
+
+.splash-skip-hint {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.4);
+    margin-top: 10px;
+    letter-spacing: 1px;
+}
+
+@keyframes splashZoomIn {
+    0% {
+        transform: scale(0.72);
+        opacity: 0;
+        filter: drop-shadow(0 0 0 rgba(229, 9, 20, 0));
+    }
+    38% {
+        transform: scale(1.04);
+        opacity: 1;
+        filter: drop-shadow(0 0 45px rgba(229, 9, 20, 0.85));
+    }
+    82% {
+        transform: scale(1.1);
+        opacity: 1;
+        filter: drop-shadow(0 0 65px rgba(229, 9, 20, 0.95));
+    }
+    100% {
+        transform: scale(1.24);
+        opacity: 0;
+        filter: blur(8px) drop-shadow(0 0 95px rgba(229, 9, 20, 1));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .splash-inner {
+        animation: none !important;
+    }
+    .cinematic-splash {
+        display: none !important;
+    }
+}

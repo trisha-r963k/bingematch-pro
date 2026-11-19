@@ -8,8 +8,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- 100% Pure Self-Contained Modern Cinematic Stylesheet (No Tailwind / No External CSS Frameworks) -->
     <link rel="stylesheet" href="style.css">
+    <!-- Netflix Theme Modern Visual Overrides -->
+    <link rel="stylesheet" href="netflix-theme.css">
 </head>
 <body>
+
+    <!-- Netflix Ambient Background Layer (z-index: -1, pointer-events: none) -->
+    <div class="netflix-bg-ambient" id="netflixBgAmbient" aria-hidden="true">
+        <div class="netflix-film-grain"></div>
+        <div class="netflix-ambient-lines"></div>
+    </div>
 
     <!-- ==================== CINEMATIC AMBIENT BACKGROUND ==================== -->
     <canvas id="ambientCanvas"></canvas>
@@ -21,8 +29,8 @@
             
             <!-- Logo Header -->
             <div class="auth-header">
-                <div class="auth-logo-icon">
-                    <i class="fa-solid fa-film"></i>
+                <div class="auth-logo-wrap">
+                    <img src="assets/logo.jpg" alt="BingeMatch Pro" class="auth-hero-logo">
                 </div>
                 <h1 class="auth-brand">BINGEMATCH<span>PRO</span></h1>
                 <p id="authSubtitle" class="auth-subtitle">Please sign in to access the anti-regret cinema engine</p>
@@ -118,6 +126,15 @@
         </div>
     </div>
 
+    <!-- ==================== CINEMATIC SPLASH TRANSITION ==================== -->
+    <div id="cinematicSplash" class="cinematic-splash hidden" aria-hidden="true">
+        <div class="splash-inner">
+            <img src="assets/logo.jpg" alt="BingeMatch Pro" class="splash-logo">
+            <p class="splash-tagline">ANTI-REGRET CINEMA ENGINE</p>
+            <span class="splash-skip-hint">Click or press ESC to skip</span>
+        </div>
+    </div>
+
     <!-- ==================== MAIN APPLICATION ==================== -->
     <div id="mainApp" class="main-app hidden">
         
@@ -126,9 +143,7 @@
             <div class="nav-left">
                 <!-- Logo -->
                 <div class="nav-brand" onclick="resetFilters()">
-                    <div class="nav-logo-badge">
-                        <i class="fa-solid fa-film"></i>
-                    </div>
+                    <img src="assets/logo.jpg" alt="BingeMatch Pro" class="nav-logo-img">
                     <span class="nav-title">BINGEMATCH<span>PRO</span></span>
                 </div>
                 
@@ -718,5 +733,7 @@
     <script src="data/metrics_data.js"></script>
     <!-- Main Application Logic & ML Integration -->
     <script src="new.js"></script>
+    <!-- Visual Flourishes & UI Effects -->
+    <script src="ui-effects.js"></script>
 </body>
 </html>
