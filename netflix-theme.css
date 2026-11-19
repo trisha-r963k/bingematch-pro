@@ -521,3 +521,92 @@ body.bg-anim-paused .spotlight-animated-bg {
         display: none !important;
     }
 }
+
+
+/* 13. Netflix & Hotstar Style Hero Video & Cinematic Motion Canvas */
+.spotlight-card {
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.spotlight-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+    opacity: 0.9;
+    pointer-events: none;
+    transition: opacity 0.6s ease;
+}
+
+.spotlight-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+    mix-blend-mode: screen;
+    opacity: 0.82;
+}
+
+.spotlight-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    background: 
+        linear-gradient(to right, rgba(11, 11, 15, 0.97) 0%, rgba(11, 11, 15, 0.82) 42%, rgba(11, 11, 15, 0.35) 80%, rgba(11, 11, 15, 0.15) 100%),
+        linear-gradient(to top, rgba(11, 11, 15, 0.99) 0%, rgba(11, 11, 15, 0.68) 45%, transparent 100%) !important;
+    pointer-events: none;
+}
+
+.spotlight-content {
+    position: relative;
+    z-index: 5 !important;
+}
+
+/* Netflix Style Audio / Volume Pill Button */
+.hero-audio-pill {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 20 !important;
+    background: rgba(14, 14, 20, 0.78);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    color: #ffffff;
+    padding: 7px 15px;
+    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6);
+}
+
+.hero-audio-pill:hover {
+    background: rgba(229, 9, 20, 0.9);
+    border-color: #e50914;
+    transform: scale(1.06);
+    box-shadow: 0 6px 22px rgba(229, 9, 20, 0.5);
+}
+
+.hero-audio-pill.active {
+    background: rgba(229, 9, 20, 0.85);
+    border-color: #e50914;
+}
+
+@media (max-width: 768px) {
+    .hero-audio-pill {
+        top: 14px;
+        right: 14px;
+        padding: 6px 12px;
+        font-size: 10px;
+    }
+}

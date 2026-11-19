@@ -220,6 +220,20 @@
                 
                 <!-- Left: Featured Spotlight Card (Tenet) -->
                 <div id="featuredBanner" class="spotlight-card">
+                    <!-- Netflix Style Background Video Loop -->
+                    <video id="heroTrailerVideo" class="spotlight-video" autoplay muted loop playsinline preload="auto">
+                        <source src="assets/trailer.mp4" type="video/mp4">
+                    </video>
+
+                    <!-- Cinematic Motion VFX Canvas (Hotstar/Netflix Anamorphic Flare & Particles) -->
+                    <canvas id="heroCinematicCanvas" class="spotlight-canvas"></canvas>
+
+                    <!-- Netflix Style Audio Toggle Pill -->
+                    <button id="heroAudioToggleBtn" class="hero-audio-pill" onclick="toggleHeroAudio(event)" title="Toggle Sound (Mute / Unmute)">
+                        <i class="fa-solid fa-volume-xmark" id="heroAudioIcon"></i>
+                        <span id="heroAudioLabel">Muted</span>
+                    </button>
+
                     <div class="spotlight-animated-bg"></div>
                     <div class="spotlight-overlay"></div>
                     

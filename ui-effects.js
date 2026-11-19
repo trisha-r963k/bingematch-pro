@@ -96,16 +96,145 @@
         }
     }
 
-    // 4. Initialize once DOM is ready
+    // 4. Hero Motion VFX Canvas (Hotstar/Netflix Anamorphic Flares & Ambient Embers)
+    function initHeroCinematicVFX() {
+        const canvas = document.getElementById('heroCinematicCanvas');
+        if (!canvas) return;
+
+        const ctx = canvas.getContext('2d');
+        let width = canvas.width = canvas.offsetWidth || 600;
+        let height = canvas.height = canvas.offsetHeight || 450;
+
+        function handleResize() {
+            if (!canvas.parentElement) return;
+            width = canvas.width = canvas.parentElement.offsetWidth || 600;
+            height = canvas.height = canvas.parentElement.offsetHeight || 450;
+        }
+        window.addEventListener('resize', handleResize, { passive: true });
+        handleResize();
+
+        // Particles & Anamorphic Streaks
+        const particles = [];
+        const count = 35;
+        for (let i = 0; i < count; i++) {
+            particles.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                vx: (Math.random() - 0.5) * 0.45,
+                vy: -Math.random() * 0.6 - 0.2, // drifting upwards like embers
+                radius: Math.random() * 2 + 0.8,
+                alpha: Math.random() * 0.6 + 0.2,
+                color: Math.random() > 0.4 ? 'rgba(229, 9, 20, ' : 'rgba(255, 120, 60, '
+            });
+        }
+
+        let flarePhase = 0;
+        let animId = null;
+
+        function render() {
+            if (document.hidden || document.body.classList.contains('bg-anim-paused')) {
+                animId = requestAnimationFrame(render);
+                return;
+            }
+
+            ctx.clearRect(0, 0, width, height);
+            flarePhase += 0.015;
+
+            // Draw Subtle Anamorphic Cinematic Lens Flare (Horizontal Glow Strip)
+            const flareY = height * 0.42 + Math.sin(flarePhase) * 20;
+            const flareWidth = width * 0.85;
+            const flareGrad = ctx.createLinearGradient(width * 0.5 - flareWidth / 2, flareY, width * 0.5 + flareWidth / 2, flareY);
+            flareGrad.addColorStop(0, 'rgba(229, 9, 20, 0)');
+            flareGrad.addColorStop(0.5, `rgba(229, 9, 20, ${0.12 + Math.sin(flarePhase * 2) * 0.04})`);
+            flareGrad.addColorStop(1, 'rgba(229, 9, 20, 0)');
+
+            ctx.fillStyle = flareGrad;
+            ctx.fillRect(width * 0.5 - flareWidth / 2, flareY - 12, flareWidth, 24);
+
+            // Floating Cinematic Embers
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+
+                if (p.y < 0) {
+                    p.y = height + 10;
+                    p.x = Math.random() * width;
+                }
+                if (p.x < 0) p.x = width;
+                if (p.x > width) p.x = 0;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = p.color + p.alpha + ')';
+                ctx.shadowColor = 'rgba(229, 9, 20, 0.5)';
+                ctx.shadowBlur = 6;
+                ctx.fill();
+            });
+            ctx.shadowBlur = 0;
+
+            animId = requestAnimationFrame(render);
+        }
+
+        render();
+    }
+
+    // 5. Global Netflix Audio Toggle
+    window.toggleHeroAudio = function(event) {
+        if (event) event.stopPropagation();
+        const video = document.getElementById('heroTrailerVideo');
+        const icon = document.getElementById('heroAudioIcon');
+        const label = document.getElementById('heroAudioLabel');
+        const btn = document.getElementById('heroAudioToggleBtn');
+
+        if (!video) return;
+
+        video.muted = !video.muted;
+
+        if (video.muted) {
+            if (icon) icon.className = "fa-solid fa-volume-xmark";
+            if (label) label.innerText = "Muted";
+            if (btn) btn.classList.remove('active');
+        } else {
+            if (icon) icon.className = "fa-solid fa-volume-high";
+            if (label) label.innerText = "Sound On";
+            if (btn) btn.classList.add('active');
+
+            // Play video if browser paused it
+            video.play().catch(() => {});
+
+            // Subtle cinematic synthesizer riser if video has no audio track
+            try {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (AudioCtx) {
+                    const ctx = new AudioCtx();
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(55, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(110, ctx.currentTime + 0.6);
+                    gain.gain.setValueAtTime(0.08, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.8);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.8);
+                }
+            } catch (e) {}
+        }
+    };
+
+    // 6. Initialize once DOM is ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
             initNavbarScrollEffect();
             initVisibilityWatcher();
             initCardStaggerAnimation();
+            initHeroCinematicVFX();
         });
     } else {
         initNavbarScrollEffect();
         initVisibilityWatcher();
         initCardStaggerAnimation();
+        initHeroCinematicVFX();
     }
 })();
