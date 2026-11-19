@@ -206,6 +206,10 @@ body {
 }
 
 .spotlight-animated-bg {
+    background-image: url('assets/hero-banner.jpg'), linear-gradient(-45deg, #180507, #2f070c, #09090c, #3f090d) !important;
+    background-position: center !important;
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
     animation: kenBurnsDrift 28s ease-in-out infinite alternate !important;
     will-change: transform;
 }
