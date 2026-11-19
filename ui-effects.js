@@ -238,6 +238,54 @@
         }
     };
 
+    // 7. Netflix India Landing Page & Auth Modal Handlers
+    window.openAuthModal = function(view = 'login') {
+        const modal = document.getElementById('authModalOverlay');
+        if (modal) {
+            modal.classList.remove('hidden');
+            if (typeof window.switchAuthView === 'function') {
+                window.switchAuthView(view);
+            }
+        }
+    };
+
+    window.closeAuthModal = function() {
+        const modal = document.getElementById('authModalOverlay');
+        if (modal) {
+            modal.classList.add('hidden');
+        }
+    };
+
+    window.handleLandingGetStarted = function() {
+        const input = document.getElementById('landingQuickUserInput');
+        const val = input ? input.value.trim() : '';
+        if (val) {
+            const uLogin = document.getElementById('loginUsername');
+            const uSignup = document.getElementById('signupUsername');
+            if (uLogin) uLogin.value = val;
+            if (uSignup) uSignup.value = val;
+        }
+        window.openAuthModal('login');
+    };
+
+    window.quickFillDemoLogin = function(u, p) {
+        const uLogin = document.getElementById('loginUsername');
+        const pLogin = document.getElementById('loginPassword');
+        if (uLogin) uLogin.value = u;
+        if (pLogin) pLogin.value = p;
+        window.openAuthModal('login');
+
+        // Instant submit for frictionless evaluation
+        const form = document.getElementById('loginFormContainer');
+        if (form) {
+            if (typeof form.requestSubmit === 'function') {
+                form.requestSubmit();
+            } else if (typeof window.handleLoginSubmit === 'function') {
+                window.handleLoginSubmit(new Event('submit'));
+            }
+        }
+    };
+
     // 6. Initialize once DOM is ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {

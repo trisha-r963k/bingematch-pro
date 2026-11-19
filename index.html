@@ -7,9 +7,9 @@
     <!-- FontAwesome for cinematic icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- 100% Pure Self-Contained Modern Cinematic Stylesheet (No Tailwind / No External CSS Frameworks) -->
-    <link rel="stylesheet" href="style.css?v=3.1">
+    <link rel="stylesheet" href="style.css?v=4.0">
     <!-- Netflix Theme Modern Visual Overrides -->
-    <link rel="stylesheet" href="netflix-theme.css?v=3.1">
+    <link rel="stylesheet" href="netflix-theme.css?v=4.0">
 </head>
 <body>
 
@@ -23,112 +23,220 @@
     <canvas id="ambientCanvas"></canvas>
     <div class="ambient-vignette"></div>
 
-    <!-- ==================== AUTH GATE MODAL ==================== -->
-    <div id="loginGate" class="auth-gate">
-        <div class="auth-card">
-            
-            <!-- Logo Header -->
-            <div class="auth-header">
-                <div class="auth-logo-wrap">
-                    <img src="assets/logo.jpg" alt="BingeMatch Pro" class="auth-hero-logo">
-                </div>
-                <h1 class="auth-brand">BINGEMATCH<span>PRO</span></h1>
-                <p id="authSubtitle" class="auth-subtitle">Please sign in to access the anti-regret cinema engine</p>
+    <!-- ==================== NETFLIX INDIA STYLE LANDING / AUTH GATE ==================== -->
+    <div id="loginGate" class="auth-gate netflix-landing-viewport">
+        
+        <!-- 1. Tilted Poster Collage Background Grid (100vh, rotate -12deg, scale 1.25) -->
+        <div class="landing-poster-canvas" aria-hidden="true">
+            <div class="landing-poster-grid">
+                <!-- Row 1 -->
+                <div class="poster-tile tile-gradient-crimson" style="background-image: url('assets/hero-banner.jpg');"><span>TENET</span></div>
+                <div class="poster-tile tile-gradient-noir"><span>INCEPTION</span></div>
+                <div class="poster-tile tile-gradient-gold"><span>3 IDIOTS</span></div>
+                <div class="poster-tile tile-gradient-indigo"><span>INTERSTELLAR</span></div>
+                <div class="poster-tile tile-gradient-ruby"><span>THE DARK KNIGHT</span></div>
+                <div class="poster-tile tile-gradient-crimson"><span>DANGAL</span></div>
+                <div class="poster-tile tile-gradient-emerald"><span>PARASITE</span></div>
+                <div class="poster-tile tile-gradient-amber"><span>GLADIATOR</span></div>
+                
+                <!-- Row 2 -->
+                <div class="poster-tile tile-gradient-noir"><span>OPPENHEIMER</span></div>
+                <div class="poster-tile tile-gradient-indigo" style="background-image: url('assets/hero-banner.jpg');"><span>TENET</span></div>
+                <div class="poster-tile tile-gradient-ruby"><span>PULP FICTION</span></div>
+                <div class="poster-tile tile-gradient-emerald"><span>LAGAAN</span></div>
+                <div class="poster-tile tile-gradient-crimson"><span>WHIPLASH</span></div>
+                <div class="poster-tile tile-gradient-gold"><span>FIGHT CLUB</span></div>
+                <div class="poster-tile tile-gradient-noir"><span>ANDHADHUN</span></div>
+                <div class="poster-tile tile-gradient-indigo"><span>THE MATRIX</span></div>
+                
+                <!-- Row 3 -->
+                <div class="poster-tile tile-gradient-amber"><span>SHOLAY</span></div>
+                <div class="poster-tile tile-gradient-crimson"><span>DUNE</span></div>
+                <div class="poster-tile tile-gradient-noir" style="background-image: url('assets/hero-banner.jpg');"><span>TENET</span></div>
+                <div class="poster-tile tile-gradient-emerald"><span>SWADES</span></div>
+                <div class="poster-tile tile-gradient-ruby"><span>AVATAR</span></div>
+                <div class="poster-tile tile-gradient-indigo"><span>GANGS OF WASSEYPUR</span></div>
+                <div class="poster-tile tile-gradient-gold"><span>SEVEN</span></div>
+                <div class="poster-tile tile-gradient-crimson"><span>MAD MAX</span></div>
+                
+                <!-- Row 4 -->
+                <div class="poster-tile tile-gradient-noir"><span>PK</span></div>
+                <div class="poster-tile tile-gradient-gold"><span>THE PRESTIGE</span></div>
+                <div class="poster-tile tile-gradient-indigo"><span>TAARE ZAMEEN PAR</span></div>
+                <div class="poster-tile tile-gradient-crimson"><span>BLADE RUNNER</span></div>
+                <div class="poster-tile tile-gradient-emerald" style="background-image: url('assets/hero-banner.jpg');"><span>TENET</span></div>
+                <div class="poster-tile tile-gradient-noir"><span>BARFI!</span></div>
+                <div class="poster-tile tile-gradient-ruby"><span>JOKER</span></div>
+                <div class="poster-tile tile-gradient-amber"><span>RRR</span></div>
             </div>
-
-            <!-- 1. LOGIN FORM (Default active) -->
-            <form id="loginFormContainer" class="auth-form" onsubmit="handleLoginSubmit(event)">
-                <div class="form-group">
-                    <label class="form-label">Username</label>
-                    <div class="input-wrapper">
-                        <i class="fa-solid fa-user input-icon"></i>
-                        <input type="text" id="loginUsername" required placeholder="Enter username (e.g. homraj)" class="form-input">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="form-label-row">
-                        <label class="form-label">Password</label>
-                        <button type="button" onclick="switchAuthView('forgot')" class="btn-link" style="font-size: 11px;">Forgot Password?</button>
-                    </div>
-                    <div class="input-wrapper">
-                        <i class="fa-solid fa-key input-icon"></i>
-                        <input type="password" id="loginPassword" required placeholder="••••••••" class="form-input">
-                    </div>
-                </div>
-
-                <button type="submit" class="btn-primary">
-                    <i class="fa-solid fa-right-to-bracket"></i>
-                    <span>Login & Enter Hub</span>
-                </button>
-
-                <div class="auth-admin-hint">
-                    <i class="fa-solid fa-shield-halved" style="color: #f59e0b;"></i>
-                    <span>Default Admin: <strong>admin</strong> / <strong>admin</strong></span>
-                </div>
-
-                <p class="auth-footer">
-                    Don't have an account? <button type="button" onclick="switchAuthView('signup')" class="btn-link">Create Account</button>
-                </p>
-            </form>
-
-            <!-- 2. SIGN UP FORM (Initially hidden) -->
-            <form id="signupFormContainer" class="auth-form hidden" onsubmit="handleSignupSubmit(event)">
-                <div class="form-group">
-                    <label class="form-label">Choose Username</label>
-                    <div class="input-wrapper">
-                        <i class="fa-solid fa-user-plus input-icon"></i>
-                        <input type="text" id="signupUsername" required placeholder="Pick a username" class="form-input">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Email Address</label>
-                    <div class="input-wrapper">
-                        <i class="fa-solid fa-envelope input-icon"></i>
-                        <input type="email" id="signupEmail" required placeholder="name@example.com" class="form-input">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Create Password</label>
-                    <div class="input-wrapper">
-                        <i class="fa-solid fa-lock input-icon"></i>
-                        <input type="password" id="signupPassword" required placeholder="••••••••" class="form-input">
-                    </div>
-                </div>
-
-                <button type="submit" class="btn-primary">
-                    <i class="fa-solid fa-user-check"></i>
-                    <span>Register & Start BingeMatch</span>
-                </button>
-
-                <p class="auth-footer">
-                    Already have an account? <button type="button" onclick="switchAuthView('login')" class="btn-link">Login here</button>
-                </p>
-            </form>
-
-            <!-- 3. FORGOT PASSWORD FORM (Initially hidden) -->
-            <form id="forgotFormContainer" class="auth-form hidden" onsubmit="handleForgotSubmit(event)">
-                <div class="form-group">
-                    <label class="form-label">Registered Account Email</label>
-                    <div class="input-wrapper">
-                        <i class="fa-solid fa-envelope input-icon"></i>
-                        <input type="email" id="forgotEmail" required placeholder="Enter your email" class="form-input">
-                    </div>
-                </div>
-
-                <button type="submit" class="btn-primary">
-                    <i class="fa-solid fa-paper-plane"></i>
-                    <span>Send Reset Link</span>
-                </button>
-
-                <p class="auth-footer">
-                    Remembered password? <button type="button" onclick="switchAuthView('login')" class="btn-link">Back to Login</button>
-                </p>
-            </form>
-
+            <!-- Deep dark radial vignette overlay: rgba(0,0,0,0.6) center to rgba(0,0,0,0.92) edges -->
+            <div class="landing-vignette-overlay"></div>
         </div>
+
+        <!-- 2. Top Header: Left Logo, Right Red Sign In Button -->
+        <header class="landing-header">
+            <div class="landing-brand">
+                <img src="assets/logo.jpg" alt="BingeMatch Pro" class="landing-logo-img">
+                <span class="landing-brand-title">BINGEMATCH<span>PRO</span></span>
+            </div>
+            <div class="landing-header-actions">
+                <button type="button" onclick="openAuthModal('login')" class="btn-landing-signin">
+                    Sign In
+                </button>
+            </div>
+        </header>
+
+        <!-- 3. Center Hero & Inline CTA -->
+        <div class="landing-hero-center">
+            <div class="landing-hero-inner">
+                <h1 class="landing-headline">Stop browsing 45 minutes.<br>Watch without regret.</h1>
+                <p class="landing-subheadline">4-Class ML Verdicts · 0–100 Regret Score · Fits Your Exact Minutes</p>
+                <p class="landing-prompt">Ready to watch? Enter your username or email to create or restart your anti-regret journey.</p>
+                
+                <div class="landing-cta-form">
+                    <div class="landing-input-wrap">
+                        <input type="text" id="landingQuickUserInput" placeholder="Username or Email" class="landing-hero-input" onkeydown="if(event.key==='Enter') handleLandingGetStarted()">
+                    </div>
+                    <button type="button" onclick="handleLandingGetStarted()" class="btn-landing-getstarted">
+                        <span>Get Started</span>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Bottom Curved Crimson/Indigo Glow Arc -->
+        <div class="landing-bottom-curve" aria-hidden="true"></div>
+
+        <!-- 5. Centered Glassmorphic Auth Modal (Toggled by Sign In / Get Started) -->
+        <div id="authModalOverlay" class="auth-modal-overlay hidden">
+            <div class="auth-card glassmorphic-auth-card">
+                
+                <!-- Modal Close Button -->
+                <button type="button" onclick="closeAuthModal()" class="auth-modal-close-btn" title="Close">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+
+                <!-- Logo Header -->
+                <div class="auth-header">
+                    <div class="auth-logo-wrap">
+                        <img src="assets/logo.jpg" alt="BingeMatch Pro" class="auth-hero-logo">
+                    </div>
+                    <h2 class="auth-brand">BINGEMATCH<span>PRO</span></h2>
+                    <p id="authSubtitle" class="auth-subtitle">Please sign in to access the anti-regret cinema engine</p>
+                </div>
+
+                <!-- Viva / Offline Testing Quick-Fill Demo Bar -->
+                <div class="auth-viva-bar">
+                    <span class="viva-label"><i class="fa-solid fa-graduation-cap"></i> Viva / Demo 1-Click Login:</span>
+                    <div class="viva-btn-group">
+                        <button type="button" onclick="quickFillDemoLogin('admin', 'admin')" class="btn-viva-chip chip-admin" title="Login as Administrator">
+                            <i class="fa-solid fa-shield-halved"></i> Admin
+                        </button>
+                        <button type="button" onclick="quickFillDemoLogin('homraj', 'password')" class="btn-viva-chip chip-user" title="Login as Homraj">
+                            <i class="fa-solid fa-user"></i> Homraj
+                        </button>
+                        <button type="button" onclick="quickFillDemoLogin('sanchita', 'password')" class="btn-viva-chip chip-ml" title="Login as Sanchita (ML)">
+                            <i class="fa-solid fa-brain"></i> Sanchita (ML)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 1. LOGIN FORM (Default active) -->
+                <form id="loginFormContainer" class="auth-form" onsubmit="handleLoginSubmit(event)">
+                    <div class="form-group">
+                        <label class="form-label">Username</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-user input-icon"></i>
+                            <input type="text" id="loginUsername" required placeholder="Enter username (e.g. admin)" class="form-input">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-label-row">
+                            <label class="form-label">Password</label>
+                            <button type="button" onclick="switchAuthView('forgot')" class="btn-link" style="font-size: 11px;">Forgot Password?</button>
+                        </div>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-key input-icon"></i>
+                            <input type="password" id="loginPassword" required placeholder="••••••••" class="form-input">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                        <span>Login & Enter Hub</span>
+                    </button>
+
+                    <div class="auth-admin-hint">
+                        <i class="fa-solid fa-shield-halved" style="color: #f59e0b;"></i>
+                        <span>Default Admin: <strong>admin</strong> / <strong>admin</strong></span>
+                    </div>
+
+                    <p class="auth-footer">
+                        Don't have an account? <button type="button" onclick="switchAuthView('signup')" class="btn-link">Create Account</button>
+                    </p>
+                </form>
+
+                <!-- 2. SIGN UP FORM (Initially hidden) -->
+                <form id="signupFormContainer" class="auth-form hidden" onsubmit="handleSignupSubmit(event)">
+                    <div class="form-group">
+                        <label class="form-label">Choose Username</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-user-plus input-icon"></i>
+                            <input type="text" id="signupUsername" required placeholder="Pick a username" class="form-input">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-envelope input-icon"></i>
+                            <input type="email" id="signupEmail" required placeholder="name@example.com" class="form-input">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Create Password</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-lock input-icon"></i>
+                            <input type="password" id="signupPassword" required placeholder="••••••••" class="form-input">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary">
+                        <i class="fa-solid fa-user-check"></i>
+                        <span>Register & Start BingeMatch</span>
+                    </button>
+
+                    <p class="auth-footer">
+                        Already have an account? <button type="button" onclick="switchAuthView('login')" class="btn-link">Login here</button>
+                    </p>
+                </form>
+
+                <!-- 3. FORGOT PASSWORD FORM (Initially hidden) -->
+                <form id="forgotFormContainer" class="auth-form hidden" onsubmit="handleForgotSubmit(event)">
+                    <div class="form-group">
+                        <label class="form-label">Registered Account Email</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-envelope input-icon"></i>
+                            <input type="email" id="forgotEmail" required placeholder="Enter your email" class="form-input">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>Send Reset Link</span>
+                    </button>
+
+                    <p class="auth-footer">
+                        Remembered password? <button type="button" onclick="switchAuthView('login')" class="btn-link">Back to Login</button>
+                    </p>
+                </form>
+
+            </div>
+        </div>
+
     </div>
 
     <!-- ==================== CINEMATIC SPLASH TRANSITION ==================== -->
@@ -1060,12 +1168,12 @@
     </div>
 
     <!-- Preloaded Curated Scored Movies Dataset -->
-    <script src="data/curated_movies.js?v=3.1"></script>
+    <script src="data/curated_movies.js?v=4.0"></script>
     <!-- Preloaded ML Metrics -->
-    <script src="data/metrics_data.js?v=3.1"></script>
+    <script src="data/metrics_data.js?v=4.0"></script>
     <!-- Main Application Logic & ML Integration -->
-    <script src="new.js?v=3.1"></script>
+    <script src="new.js?v=4.0"></script>
     <!-- Visual Flourishes & UI Effects -->
-    <script src="ui-effects.js?v=3.1"></script>
+    <script src="ui-effects.js?v=4.0"></script>
 </body>
 </html>

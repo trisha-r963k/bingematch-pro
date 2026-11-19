@@ -1146,3 +1146,431 @@ body, #mainApp {
     }
 }
 
+/* ==========================================================================
+   15. NETFLIX INDIA HERO & LANDING REDESIGN
+   - Full Viewport (100vh) Tilted Poster Collage Background Grid
+   - Deep Dark Radial Vignette (rgba(0,0,0,0.6) center to rgba(0,0,0,0.92) edges)
+   - Top Header with Crimson Logo & Red Sign In Button
+   - Center Hero & Inline CTA ("Get Started >")
+   - Glassmorphic Auth Modal & Viva Quick Demo Buttons
+   - Bottom Curved Crimson/Indigo Glow Arc
+   ========================================================================== */
+
+.netflix-landing-viewport {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    overflow: hidden !important;
+    background: #000000 !important;
+    z-index: 9999 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+}
+
+.netflix-landing-viewport.hidden {
+    display: none !important;
+}
+
+/* 1. Tilted Poster Collage Background Grid */
+.landing-poster-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.landing-poster-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 16px;
+    width: 140vw;
+    height: 140vh;
+    position: absolute;
+    top: -20vh;
+    left: -20vw;
+    transform: rotate(-12deg) scale(1.25);
+    transform-origin: center center;
+    opacity: 0.55;
+    will-change: transform;
+}
+
+.poster-tile {
+    height: 220px;
+    border-radius: 8px;
+    display: flex;
+    align-items: flex-end;
+    padding: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.poster-tile span {
+    font-size: 11px;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.75);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+    position: relative;
+    z-index: 2;
+}
+
+/* Fallback Gradient Tiles (Pure CSS, 100% Offline) */
+.tile-gradient-crimson {
+    background: linear-gradient(135deg, #3f090d 0%, #150204 100%), #1a0406;
+    border: 1px solid rgba(229, 9, 20, 0.25);
+}
+.tile-gradient-noir {
+    background: linear-gradient(135deg, #1f1f26 0%, #0a0a0e 100%), #111;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.tile-gradient-indigo {
+    background: linear-gradient(135deg, #1e1b4b 0%, #08081a 100%), #0d0c22;
+    border: 1px solid rgba(99, 102, 241, 0.25);
+}
+.tile-gradient-gold {
+    background: linear-gradient(135deg, #382404 0%, #0f0a02 100%), #1c1202;
+    border: 1px solid rgba(245, 158, 11, 0.25);
+}
+.tile-gradient-ruby {
+    background: linear-gradient(135deg, #4c0519 0%, #130106 100%), #1e020a;
+    border: 1px solid rgba(244, 63, 94, 0.25);
+}
+.tile-gradient-emerald {
+    background: linear-gradient(135deg, #022c22 0%, #020f0c 100%), #041a14;
+    border: 1px solid rgba(16, 185, 129, 0.25);
+}
+.tile-gradient-amber {
+    background: linear-gradient(135deg, #361704 0%, #110701 100%), #1d0c03;
+    border: 1px solid rgba(217, 119, 6, 0.25);
+}
+
+/* Deep Dark Radial Vignette Overlay */
+.landing-vignette-overlay {
+    position: absolute;
+    inset: 0;
+    background: 
+        radial-gradient(circle at center, rgba(0, 0, 0, 0.6) 0%, rgba(9, 10, 15, 0.88) 60%, rgba(9, 10, 15, 0.98) 100%),
+        linear-gradient(to top, rgba(9, 10, 15, 0.95) 0%, rgba(9, 10, 15, 0.4) 40%, rgba(9, 10, 15, 0.8) 100%);
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* 2. Top Header */
+.landing-header {
+    position: relative;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 5vw;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.landing-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    user-select: none;
+}
+
+.landing-logo-img {
+    height: 42px;
+    width: auto;
+    mix-blend-mode: screen;
+    filter: drop-shadow(0 0 16px rgba(229, 9, 20, 0.6));
+}
+
+.landing-brand-title {
+    font-size: 26px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    color: #ffffff;
+}
+.landing-brand-title span {
+    color: #e50914;
+}
+
+.btn-landing-signin {
+    background: #e50914;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 20px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(229, 9, 20, 0.45);
+    transition: all 0.22s ease;
+}
+.btn-landing-signin:hover {
+    background: #c10712;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(229, 9, 20, 0.65);
+}
+
+/* 3. Center Hero & Inline CTA */
+.landing-hero-center {
+    position: relative;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 20px;
+    flex: 1;
+}
+
+.landing-hero-inner {
+    max-width: 860px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.landing-headline {
+    font-size: clamp(2.2rem, 5vw, 4rem) !important;
+    font-weight: 900 !important;
+    line-height: 1.15 !important;
+    color: #ffffff !important;
+    letter-spacing: -0.5px !important;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.9) !important;
+    margin: 0 !important;
+}
+
+.landing-subheadline {
+    font-size: clamp(1rem, 2vw, 1.45rem) !important;
+    font-weight: 600 !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    letter-spacing: 0.2px !important;
+    margin: 0 !important;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8) !important;
+}
+
+.landing-prompt {
+    font-size: clamp(0.9rem, 1.4vw, 1.15rem) !important;
+    font-weight: 400 !important;
+    color: rgba(255, 255, 255, 0.75) !important;
+    margin: 4px 0 10px 0 !important;
+}
+
+/* Inline CTA Form */
+.landing-cta-form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 580px;
+    margin-top: 4px;
+}
+
+.landing-input-wrap {
+    flex: 1;
+}
+
+.landing-hero-input {
+    width: 100%;
+    height: 54px;
+    background: rgba(16, 16, 24, 0.78);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    color: #ffffff;
+    font-size: 16px;
+    padding: 0 18px;
+    box-sizing: border-box;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all 0.22s ease;
+}
+.landing-hero-input:focus {
+    outline: none;
+    border-color: #ffffff;
+    background: rgba(16, 16, 24, 0.92);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.25);
+}
+
+.btn-landing-getstarted {
+    height: 54px;
+    background: #e50914;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    padding: 0 28px;
+    font-size: 18px;
+    font-weight: 800;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    white-space: nowrap;
+    box-shadow: 0 4px 20px rgba(229, 9, 20, 0.5);
+    transition: all 0.22s ease;
+}
+.btn-landing-getstarted:hover {
+    background: #f40612;
+    transform: scale(1.02);
+    box-shadow: 0 6px 25px rgba(229, 9, 20, 0.7);
+}
+
+/* 4. Bottom Curved Glow Arc */
+.landing-bottom-curve {
+    position: absolute;
+    bottom: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 140%;
+    height: 65px;
+    border-top: 3px solid rgba(229, 9, 20, 0.85);
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+    background: radial-gradient(50% 100% at 50% 0%, rgba(229, 9, 20, 0.38) 0%, rgba(99, 102, 241, 0.16) 45%, transparent 100%);
+    pointer-events: none;
+    z-index: 10;
+    box-shadow: 0 -15px 35px rgba(229, 9, 20, 0.3), 0 -5px 15px rgba(99, 102, 241, 0.2);
+}
+
+/* 5. Glassmorphic Auth Modal */
+.auth-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+    animation: authFadeIn 0.25s ease-out;
+}
+.auth-modal-overlay.hidden {
+    display: none !important;
+}
+
+@keyframes authFadeIn {
+    0% { opacity: 0; transform: scale(0.97); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+.glassmorphic-auth-card {
+    position: relative;
+    background: rgba(18, 18, 26, 0.88) !important;
+    backdrop-filter: blur(24px) saturate(160%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(160%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85), 0 0 30px rgba(229, 9, 20, 0.15) !important;
+    max-width: 440px !important;
+    width: 100% !important;
+    padding: 36px 32px !important;
+    box-sizing: border-box !important;
+}
+
+.auth-modal-close-btn {
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    background: rgba(255, 255, 255, 0.08);
+    border: none;
+    color: #ffffff;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    z-index: 5;
+}
+.auth-modal-close-btn:hover {
+    background: rgba(229, 9, 20, 0.8);
+    transform: scale(1.1);
+}
+
+/* Viva Demo Quickfill Bar */
+.auth-viva-bar {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.viva-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.viva-btn-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.btn-viva-chip {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    padding: 5px 10px;
+    border-radius: 9999px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s ease;
+}
+.btn-viva-chip:hover {
+    background: rgba(229, 9, 20, 0.25);
+    border-color: #e50914;
+    transform: translateY(-1px);
+}
+.chip-admin:hover {
+    border-color: #f59e0b;
+    background: rgba(245, 158, 11, 0.2);
+}
+.chip-user:hover {
+    border-color: #34d399;
+    background: rgba(16, 185, 129, 0.2);
+}
+.chip-ml:hover {
+    border-color: #818cf8;
+    background: rgba(99, 102, 241, 0.2);
+}
+
+@media (max-width: 650px) {
+    .landing-cta-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .btn-landing-getstarted {
+        justify-content: center;
+    }
+    .landing-poster-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
