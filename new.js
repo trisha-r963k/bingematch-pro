@@ -896,6 +896,8 @@ async function handleLoginSubmit(event) {
         } else {
             alert('Incorrect Admin Password! (Default credentials: admin / admin)');
             return;
+        }
+    }
 
     if (backendAvailable) {
         try {
