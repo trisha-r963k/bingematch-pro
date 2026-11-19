@@ -7,9 +7,9 @@
     <!-- FontAwesome for cinematic icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- 100% Pure Self-Contained Modern Cinematic Stylesheet (No Tailwind / No External CSS Frameworks) -->
-    <link rel="stylesheet" href="style.css?v=2.2">
+    <link rel="stylesheet" href="style.css?v=3.0">
     <!-- Netflix Theme Modern Visual Overrides -->
-    <link rel="stylesheet" href="netflix-theme.css?v=2.2">
+    <link rel="stylesheet" href="netflix-theme.css?v=3.0">
 </head>
 <body>
 
@@ -212,123 +212,128 @@
             </div>
         </header>
 
+        <!-- ==================== FULL-BLEED HERO BILLBOARD (TENET) ==================== -->
+        <section id="featuredBanner" class="hero-billboard spotlight-card">
+            <!-- Netflix Style Background Video Loop with Poster Fallback -->
+            <video id="heroTrailerVideo" class="spotlight-video" poster="assets/hero-banner.jpg" autoplay muted loop playsinline preload="auto">
+                <source src="assets/trailer.mp4" type="video/mp4">
+            </video>
+
+            <!-- Cinematic Motion VFX Canvas (Hotstar/Netflix Anamorphic Flare & Particles) -->
+            <canvas id="heroCinematicCanvas" class="spotlight-canvas"></canvas>
+
+            <!-- Netflix Style Audio Toggle Pill -->
+            <button id="heroAudioToggleBtn" class="hero-audio-pill" onclick="toggleHeroAudio(event)" title="Toggle Sound (Mute / Unmute)">
+                <i class="fa-solid fa-volume-xmark" id="heroAudioIcon"></i>
+                <span id="heroAudioLabel">Muted</span>
+            </button>
+
+            <div class="spotlight-animated-bg"></div>
+            <div class="spotlight-overlay"></div>
+            
+            <div class="spotlight-content hero-billboard-content">
+                <div class="spotlight-tag-banner">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span>FEATURED SPOTLIGHT • PREDICTED OVERHYPED (REGRET SCORE: 76%)</span>
+                </div>
+                
+                <h1 class="spotlight-title">TENET <span>(2020)</span></h1>
+                
+                <div class="spotlight-meta-row">
+                    <span class="badge-pill badge-overhyped">⚠️ OVERHYPED</span>
+                    <span class="badge-pill badge-regret-high">HIGH REGRET: 76%</span>
+                    <span style="color: var(--text-secondary);">Hollywood</span>
+                    <span style="color: var(--text-muted);">•</span>
+                    <span style="color: var(--text-secondary);">150 mins</span>
+                    <span style="color: var(--text-muted);">•</span>
+                    <span style="color: var(--text-primary);">Critics: 69% | Audience: 76%</span>
+                </div>
+                
+                <p class="spotlight-desc">
+                    Armed with only one word—Tenet—and fighting for the survival of the entire world, a Protagonist journeys through a twilight world of international espionage on a mission that unfolds beyond real time.
+                </p>
+                
+                <div class="spotlight-actions">
+                    <button onclick="openMovieDetails('m/tenet_2020')" class="btn-primary hero-btn-glow">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <span>Check Regret Analysis</span>
+                    </button>
+                    <button onclick="openMovieDetails('m/tenet_2020')" class="btn-secondary">
+                        <i class="fa-solid fa-compass"></i>
+                        <span>See Safer Alternatives</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
         <!-- Main Content Area -->
         <main class="content-wrapper">
-            
-            <!-- Hero 2-Column Grid: Left Spotlight Card, Right ML Decision Control Hub -->
-            <section class="hero-grid">
-                
-                <!-- Left: Featured Spotlight Card (Tenet) -->
-                <div id="featuredBanner" class="spotlight-card">
-                    <!-- Netflix Style Background Video Loop with Poster Fallback -->
-                    <video id="heroTrailerVideo" class="spotlight-video" poster="assets/hero-banner.jpg" autoplay muted loop playsinline preload="auto">
-                        <source src="assets/trailer.mp4" type="video/mp4">
-                    </video>
 
-                    <!-- Cinematic Motion VFX Canvas (Hotstar/Netflix Anamorphic Flare & Particles) -->
-                    <canvas id="heroCinematicCanvas" class="spotlight-canvas"></canvas>
+            <!-- ==================== COMPACT HORIZONTAL FILTER STRIP ==================== -->
+            <section class="control-card horizontal-filter-strip">
+                <!-- Main Single-Row Filter Bar -->
+                <div class="filter-strip-main">
+                    <!-- Search Input & Find Button -->
+                    <div class="filter-strip-search">
+                        <div class="input-wrapper" style="flex: 1;">
+                            <i class="fa-solid fa-magnifying-glass input-icon"></i>
+                            <input type="text" id="searchInput" onkeydown="handleSearchKey(event)" oninput="handleSearchLive(this.value)" placeholder="Search movie, director, cast..." class="search-input">
+                        </div>
+                        <button onclick="triggerSearchTab()" class="btn-search">
+                            <i class="fa-solid fa-arrow-right"></i>
+                            <span>Find</span>
+                        </button>
+                    </div>
 
-                    <!-- Netflix Style Audio Toggle Pill -->
-                    <button id="heroAudioToggleBtn" class="hero-audio-pill" onclick="toggleHeroAudio(event)" title="Toggle Sound (Mute / Unmute)">
-                        <i class="fa-solid fa-volume-xmark" id="heroAudioIcon"></i>
-                        <span id="heroAudioLabel">Muted</span>
-                    </button>
+                    <!-- Quick Dropdowns: Verdict & Duration -->
+                    <div class="filter-strip-selects">
+                        <div class="filter-select-item">
+                            <i class="fa-solid fa-stamp filter-select-icon"></i>
+                            <select id="verdictFilter" onchange="applyFilters()" class="custom-select">
+                                <option value="all">All Verdicts</option>
+                                <option value="Crowd Pleaser">🏆 Crowd Pleaser</option>
+                                <option value="Hidden Gem">💎 Hidden Gem</option>
+                                <option value="Overhyped">⚠️ Overhyped</option>
+                                <option value="Arthouse Slog">⏳ Arthouse Slog</option>
+                            </select>
+                        </div>
 
-                    <div class="spotlight-animated-bg"></div>
-                    <div class="spotlight-overlay"></div>
-                    
-                    <div class="spotlight-content">
-                        <div class="spotlight-tag-banner">
-                            <i class="fa-solid fa-triangle-exclamation"></i>
-                            <span>FEATURED SPOTLIGHT • PREDICTED OVERHYPED (REGRET SCORE: 76%)</span>
+                        <div class="filter-select-item">
+                            <i class="fa-regular fa-clock filter-select-icon"></i>
+                            <select id="durationFilter" onchange="applyFilters()" class="custom-select">
+                                <option value="all">Any Duration</option>
+                                <option value="short">&lt; 120 mins</option>
+                                <option value="medium">120 - 150 mins</option>
+                                <option value="long">&gt; 150 mins</option>
+                            </select>
                         </div>
-                        
-                        <h1 class="spotlight-title">TENET <span>(2020)</span></h1>
-                        
-                        <div class="spotlight-meta-row">
-                            <span class="badge-pill badge-overhyped">⚠️ OVERHYPED</span>
-                            <span class="badge-pill badge-regret-high">HIGH REGRET: 76%</span>
-                            <span style="color: var(--text-secondary);">Hollywood</span>
-                            <span style="color: var(--text-muted);">•</span>
-                            <span style="color: var(--text-secondary);">150 mins</span>
-                            <span style="color: var(--text-muted);">•</span>
-                            <span style="color: var(--text-primary);">Critics: 69% | Audience: 76%</span>
-                        </div>
-                        
-                        <p class="spotlight-desc">
-                            Armed with only one word—Tenet—and fighting for the survival of the entire world, a Protagonist journeys through a twilight world of international espionage on a mission that unfolds beyond real time.
-                        </p>
-                        
-                        <div class="spotlight-actions">
-                            <button onclick="openMovieDetails('m/tenet_2020')" class="btn-primary">
-                                <i class="fa-solid fa-shield-halved"></i>
-                                <span>Check Regret Analysis</span>
-                            </button>
-                            <button onclick="openMovieDetails('m/tenet_2020')" class="btn-secondary">
-                                <i class="fa-solid fa-compass"></i>
-                                <span>See Safer Alternatives</span>
-                            </button>
-                        </div>
+                    </div>
+
+                    <!-- Actions & Drawer Toggle -->
+                    <div class="filter-strip-actions">
+                        <button onclick="randomSafePick()" class="btn-surprise-safe" title="Pick an anti-regret guaranteed movie">
+                            <i class="fa-solid fa-dice"></i>
+                            <span>Surprise Safe</span>
+                        </button>
+
+                        <button id="moreFiltersToggleBtn" type="button" onclick="toggleMoreFilters()" class="btn-more-filters" title="Toggle Pacing, Risk Slider & Genres">
+                            <i class="fa-solid fa-sliders"></i>
+                            <span>More ML Filters</span>
+                            <i class="fa-solid fa-chevron-down toggle-chevron"></i>
+                        </button>
+
+                        <button onclick="resetFilters()" class="btn-link filter-reset-link" title="Reset all filters">
+                            <i class="fa-solid fa-rotate-left"></i>
+                            <span>Reset</span>
+                        </button>
                     </div>
                 </div>
 
-                <!-- Right: Search & ML Decision Filters Panel -->
-                <div class="control-card">
-                    <div class="control-header">
-                        <h3 class="control-heading">
-                            <i class="fa-solid fa-sliders"></i>
-                            <span>Search & ML Decision Filters</span>
-                        </h3>
-                        <div class="control-top-actions">
-                            <button onclick="randomSafePick()" class="btn-surprise-safe">
-                                <i class="fa-solid fa-dice"></i>
-                                <span>Surprise Safe</span>
-                            </button>
-                            <button onclick="resetFilters()" class="btn-link" style="font-size: 11px;">Reset</button>
-                        </div>
-                    </div>
-
-                    <div class="control-body">
-                        <!-- Search Bar -->
-                        <div>
-                            <label class="filter-label"><i class="fa-solid fa-search"></i>Search Movie / Director / Actor</label>
-                            <div class="search-bar-row">
-                                <div class="input-wrapper" style="flex: 1;">
-                                    <i class="fa-solid fa-magnifying-glass input-icon"></i>
-                                    <input type="text" id="searchInput" onkeydown="handleSearchKey(event)" oninput="handleSearchLive(this.value)" placeholder="Search title, director, cast..." class="search-input">
-                                </div>
-                                <button onclick="triggerSearchTab()" class="btn-search">
-                                    <i class="fa-solid fa-arrow-right"></i>
-                                    <span>Find</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Dropdowns Row -->
-                        <div class="filter-row-dual">
-                            <div>
-                                <label class="filter-label"><i class="fa-solid fa-stamp"></i>ML Verdict</label>
-                                <select id="verdictFilter" onchange="applyFilters()" class="custom-select">
-                                    <option value="all">All Verdict Categories</option>
-                                    <option value="Crowd Pleaser">🏆 Crowd Pleaser (Safe Watch)</option>
-                                    <option value="Hidden Gem">💎 Hidden Gem (Audience Fav)</option>
-                                    <option value="Overhyped">⚠️ Overhyped (High Regret Risk)</option>
-                                    <option value="Arthouse Slog">⏳ Arthouse Slog (Slow / Niche)</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="filter-label"><i class="fa-regular fa-clock"></i>Watch Time</label>
-                                <select id="durationFilter" onchange="applyFilters()" class="custom-select">
-                                    <option value="all">Any Duration</option>
-                                    <option value="short">Under 120 mins (&lt; 2h)</option>
-                                    <option value="medium">120 - 150 mins</option>
-                                    <option value="long">Over 150 mins (&gt; 2.5h)</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- Pacing Mood -->
-                        <div>
+                <!-- Expandable Drawer for Pacing Mood, Max Regret Risk Slider, and Curated Genres -->
+                <div id="moreFiltersDrawer" class="more-filters-drawer hidden">
+                    <div class="more-filters-inner">
+                        <!-- Pacing Mood Dropdown -->
+                        <div class="drawer-col drawer-pacing">
                             <label class="filter-label"><i class="fa-solid fa-bolt"></i>Pacing Mood</label>
                             <select id="pacingFilter" onchange="applyFilters()" class="custom-select">
                                 <option value="all">Any Pacing Mood</option>
@@ -338,25 +343,24 @@
                             </select>
                         </div>
 
-                        <!-- Regret Risk Slider -->
-                        <div class="slider-container">
+                        <!-- Max Regret Risk Slider -->
+                        <div class="drawer-col drawer-slider">
                             <div class="slider-header-row">
                                 <span><i class="fa-solid fa-triangle-exclamation" style="color: var(--accent-red); margin-right: 4px;"></i>Max Regret Risk</span>
                                 <span id="riskMeterLabel" class="slider-val-tag">All Levels (100%)</span>
                             </div>
                             <input type="range" id="riskSlider" min="10" max="100" value="100" step="5" oninput="filterByRisk(this.value)" class="risk-range-slider">
                         </div>
-                    </div>
 
-                    <!-- Genre Pills Section -->
-                    <div class="genre-pills-section">
-                        <span class="genre-pills-label">Curated Genres:</span>
-                        <div id="genrePills" class="genre-pills-container">
-                            <!-- Populated by JavaScript -->
+                        <!-- Curated Genres Pills Section -->
+                        <div class="drawer-col drawer-genres">
+                            <span class="genre-pills-label"><i class="fa-solid fa-tags"></i>Curated Genres:</span>
+                            <div id="genrePills" class="genre-pills-container">
+                                <!-- Populated dynamically by JavaScript -->
+                            </div>
                         </div>
                     </div>
                 </div>
-
             </section>
 
             <!-- Catalog Header & Stats -->
@@ -1056,12 +1060,12 @@
     </div>
 
     <!-- Preloaded Curated Scored Movies Dataset -->
-    <script src="data/curated_movies.js?v=2.2"></script>
+    <script src="data/curated_movies.js?v=3.0"></script>
     <!-- Preloaded ML Metrics -->
-    <script src="data/metrics_data.js?v=2.2"></script>
+    <script src="data/metrics_data.js?v=3.0"></script>
     <!-- Main Application Logic & ML Integration -->
-    <script src="new.js?v=2.2"></script>
+    <script src="new.js?v=3.0"></script>
     <!-- Visual Flourishes & UI Effects -->
-    <script src="ui-effects.js?v=2.2"></script>
+    <script src="ui-effects.js?v=3.0"></script>
 </body>
 </html>

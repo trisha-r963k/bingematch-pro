@@ -223,6 +223,21 @@
         }
     };
 
+    // 6. Expandable Drawer Toggle for Compact Horizontal Filter Strip
+    window.toggleMoreFilters = function() {
+        const drawer = document.getElementById('moreFiltersDrawer');
+        const btn = document.getElementById('moreFiltersToggleBtn');
+        if (!drawer) return;
+        const isHidden = drawer.classList.contains('hidden');
+        if (isHidden) {
+            drawer.classList.remove('hidden');
+            if (btn) btn.classList.add('active');
+        } else {
+            drawer.classList.add('hidden');
+            if (btn) btn.classList.remove('active');
+        }
+    };
+
     // 6. Initialize once DOM is ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {

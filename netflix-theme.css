@@ -614,3 +614,410 @@ body.bg-anim-paused .spotlight-animated-bg {
         font-size: 10px;
     }
 }
+
+/* ==========================================================================
+   14. NETFLIX + JIOHOTSTAR OTT UPGRADE
+   - Glassmorphic Single-Line Sticky Navbar
+   - Full-Bleed Hero Billboard (TENET)
+   - Compact Horizontal Filter Strip with Expandable Drawer
+   - Horizontal OTT Poster Carousels & Clean Regret Badges
+   ========================================================================== */
+
+/* Page Background Sync with #090A0F */
+body, #mainApp {
+    background-color: #090a0f !important;
+}
+
+/* 1. Glassmorphic Single-Line Sticky Navbar */
+.navbar {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 1000 !important;
+    background: rgba(11, 13, 20, 0.75) !important;
+    backdrop-filter: blur(16px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    padding: 10px 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    flex-wrap: nowrap !important;
+    white-space: nowrap !important;
+    overflow-x: auto !important;
+    scrollbar-width: none !important;
+}
+.navbar::-webkit-scrollbar {
+    display: none !important;
+}
+
+.nav-left, .nav-right, .nav-categories {
+    display: flex !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+    white-space: nowrap !important;
+}
+
+.nav-categories {
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 9999px !important;
+    padding: 3px !important;
+    gap: 2px !important;
+}
+
+.category-btn, .action-pill-btn, .btn-logout, .user-profile-badge, .nav-brand {
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+}
+
+/* Compact Glowing Green Status Dot + Label */
+.engine-status-pill {
+    background: rgba(16, 185, 129, 0.08) !important;
+    border: 1px solid rgba(16, 185, 129, 0.25) !important;
+    padding: 4px 10px !important;
+    border-radius: 9999px !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    color: #34d399 !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+}
+
+.status-pulse-dot {
+    width: 7px !important;
+    height: 7px !important;
+    border-radius: 50% !important;
+    background: #10b981 !important;
+    box-shadow: 0 0 8px #10b981, 0 0 16px rgba(16, 185, 129, 0.7) !important;
+    animation: pulseStatusDot 2s infinite !important;
+}
+
+@keyframes pulseStatusDot {
+    0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7), 0 0 8px #10b981; }
+    70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0), 0 0 14px #34d399; }
+    100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0), 0 0 8px #10b981; }
+}
+
+/* 2. Full-Bleed Hero Billboard (TENET) */
+#featuredBanner.hero-billboard {
+    width: 100% !important;
+    min-height: 68vh !important;
+    position: relative !important;
+    border-radius: 0 !important;
+    border: none !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-end !important;
+    background-color: #090a0f !important;
+    padding: 0 !important;
+}
+
+#featuredBanner .spotlight-overlay {
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 3 !important;
+    background: 
+        linear-gradient(to right, #090a0f 0%, rgba(9, 10, 15, 0.94) 30%, rgba(9, 10, 15, 0.6) 55%, rgba(9, 10, 15, 0.15) 85%, transparent 100%),
+        linear-gradient(to top, #090a0f 0%, rgba(9, 10, 15, 0.92) 28%, rgba(9, 10, 15, 0.4) 60%, transparent 100%),
+        linear-gradient(to bottom, rgba(9, 10, 15, 0.7) 0%, transparent 22%) !important;
+    pointer-events: none !important;
+}
+
+.hero-billboard-content {
+    max-width: 1440px !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    padding: 100px 48px 48px 48px !important;
+    position: relative !important;
+    z-index: 10 !important;
+}
+
+#featuredBanner .spotlight-title {
+    font-size: clamp(2.4rem, 4.6vw, 4.2rem) !important;
+    font-weight: 900 !important;
+    letter-spacing: -0.5px !important;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.9) !important;
+    margin-bottom: 10px !important;
+}
+
+#featuredBanner .spotlight-desc {
+    max-width: 680px !important;
+    font-size: 14px !important;
+    line-height: 1.6 !important;
+    color: rgba(255, 255, 255, 0.82) !important;
+    margin-bottom: 20px !important;
+}
+
+.hero-btn-glow {
+    background: #e50914 !important;
+    box-shadow: 0 0 25px rgba(229, 9, 20, 0.65), 0 4px 15px rgba(229, 9, 20, 0.5) !important;
+    border: none !important;
+    color: #ffffff !important;
+    padding: 12px 28px !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.hero-btn-glow:hover {
+    transform: translateY(-2px) scale(1.02) !important;
+    box-shadow: 0 0 35px rgba(229, 9, 20, 0.85), 0 6px 22px rgba(229, 9, 20, 0.6) !important;
+}
+
+/* 3. Compact Horizontal Filter Strip Directly Below Hero */
+.horizontal-filter-strip {
+    background: rgba(18, 18, 24, 0.75) !important;
+    backdrop-filter: blur(20px) saturate(140%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(140%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 12px 35px -5px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+    margin: 20px 0 32px 0 !important;
+    padding: 12px 18px !important;
+    position: relative !important;
+    z-index: 20 !important;
+}
+
+.filter-strip-main {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 14px !important;
+    flex-wrap: wrap !important;
+}
+
+.filter-strip-search {
+    flex: 1 1 280px !important;
+    display: flex !important;
+    gap: 8px !important;
+    align-items: center !important;
+}
+
+.filter-strip-selects {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    flex-wrap: nowrap !important;
+}
+
+.filter-select-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    background: rgba(12, 12, 16, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 12px !important;
+    padding: 0 10px !important;
+    height: 40px !important;
+    transition: border-color 0.2s ease !important;
+}
+.filter-select-item:hover, .filter-select-item:focus-within {
+    border-color: #e50914 !important;
+}
+
+.filter-select-item .custom-select {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 4px !important;
+    font-size: 13px !important;
+    color: #ffffff !important;
+    outline: none !important;
+    box-shadow: none !important;
+    cursor: pointer !important;
+}
+
+.filter-select-icon {
+    color: #e50914 !important;
+    font-size: 12px !important;
+}
+
+.filter-strip-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    flex-wrap: nowrap !important;
+}
+
+.btn-more-filters {
+    background: rgba(255, 255, 255, 0.06) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    color: #ffffff !important;
+    padding: 9px 16px !important;
+    border-radius: 9999px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    cursor: pointer !important;
+    transition: all 0.22s ease !important;
+}
+.btn-more-filters:hover, .btn-more-filters.active {
+    background: rgba(229, 9, 20, 0.18) !important;
+    border-color: rgba(229, 9, 20, 0.5) !important;
+    color: #ffffff !important;
+}
+.btn-more-filters.active .toggle-chevron {
+    transform: rotate(180deg) !important;
+}
+.toggle-chevron {
+    transition: transform 0.25s ease !important;
+    font-size: 10px !important;
+}
+
+.filter-reset-link {
+    font-size: 12px !important;
+    color: var(--text-muted) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    cursor: pointer !important;
+    text-decoration: none !important;
+    padding: 6px 10px !important;
+    transition: color 0.2s ease !important;
+}
+.filter-reset-link:hover {
+    color: #ffffff !important;
+}
+
+/* Expandable More ML Filters Drawer */
+.more-filters-drawer {
+    margin-top: 14px !important;
+    padding-top: 14px !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+    animation: drawerSlideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.more-filters-drawer.hidden {
+    display: none !important;
+}
+
+@keyframes drawerSlideDown {
+    0% { opacity: 0; transform: translateY(-8px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+.more-filters-inner {
+    display: grid !important;
+    grid-template-columns: 210px 280px 1fr !important;
+    gap: 20px !important;
+    align-items: center !important;
+}
+
+.drawer-genres {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+}
+
+.drawer-genres .genre-pills-label {
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    color: var(--text-muted) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+}
+
+/* 4. OTT Poster Rows / Carousels */
+.movie-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    gap: 20px !important;
+    padding: 18px 6px 36px 6px !important;
+    scrollbar-width: thin !important;
+    scrollbar-color: #e50914 rgba(15, 15, 20, 0.6) !important;
+    -webkit-overflow-scrolling: touch !important;
+}
+
+.movie-grid::-webkit-scrollbar {
+    height: 6px !important;
+}
+.movie-grid::-webkit-scrollbar-track {
+    background: rgba(15, 15, 20, 0.6) !important;
+    border-radius: 9999px !important;
+}
+.movie-grid::-webkit-scrollbar-thumb {
+    background: #e50914 !important;
+    border-radius: 9999px !important;
+}
+
+.movie-card {
+    flex: 0 0 250px !important;
+    min-width: 250px !important;
+    max-width: 250px !important;
+    scroll-snap-align: start !important;
+    position: relative !important;
+    background: rgba(18, 18, 24, 0.85) !important;
+    backdrop-filter: blur(14px) !important;
+    border-radius: 14px !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    padding: 16px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    min-height: 220px !important;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s ease !important;
+    cursor: pointer !important;
+    user-select: none !important;
+}
+
+/* OTT Hover: Scale 105, lift, and subtle crimson/gold border glow */
+.movie-card:hover {
+    transform: scale(1.05) translateY(-5px) !important;
+    border-color: rgba(229, 9, 20, 0.65) !important;
+    background: rgba(24, 24, 34, 0.98) !important;
+    box-shadow: 0 18px 36px -6px rgba(0, 0, 0, 0.9), 
+                0 0 22px rgba(229, 9, 20, 0.3), 
+                0 0 10px rgba(251, 191, 36, 0.18) !important;
+    z-index: 10 !important;
+}
+
+/* Clean Top-Right Regret Score Badge */
+.movie-card .regret-pill {
+    position: absolute !important;
+    top: 14px !important;
+    right: 14px !important;
+    margin: 0 !important;
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    padding: 4px 9px !important;
+    border-radius: 9999px !important;
+    letter-spacing: 0.2px !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6) !important;
+    z-index: 6 !important;
+}
+
+.movie-card .card-top-row {
+    padding-right: 90px !important;
+}
+
+/* Keep full plot synopses hidden by default */
+.movie-card .card-synopsis {
+    display: none !important;
+}
+
+/* Mobile & Tablet Fine-Tuning */
+@media (max-width: 900px) {
+    .more-filters-inner {
+        grid-template-columns: 1fr !important;
+    }
+    .hero-billboard-content {
+        padding: 60px 24px 32px 24px !important;
+    }
+    .movie-card {
+        flex: 0 0 220px !important;
+        min-width: 220px !important;
+    }
+}
+
